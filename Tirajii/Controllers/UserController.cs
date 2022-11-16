@@ -69,7 +69,8 @@ namespace Tirajii.Controllers
             var user = new User
             {
                 Email = model.Email,
-                UserName = model.UserName
+                UserName = model.UserName,
+                FullName = model.FullName
             };
             var result = await userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)

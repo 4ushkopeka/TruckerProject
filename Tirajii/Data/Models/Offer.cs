@@ -23,5 +23,7 @@ namespace Tirajii.Data.Models
         public decimal Payment { get; set; }
 
         public bool IsTaken { get; set; }
+
+        public bool IsCompleted { get; set; }
     }
 }

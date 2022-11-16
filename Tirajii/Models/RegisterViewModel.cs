@@ -4,6 +4,8 @@ namespace Tirajii.Models
 {
     public class RegisterViewModel
     {
+        [Required]
+        public string FullName { get; set; }
         [EmailAddress]
         [Required]
         public string Email { get; set; }
@@ -19,6 +21,5 @@ namespace Tirajii.Models
         [Compare(nameof(Password))]
         public string ConfirmPassword { get; set; }
 
-        public bool RememberMe { get; set; }
     }
 }
