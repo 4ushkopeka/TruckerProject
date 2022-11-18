@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Tirajii.Models
+namespace Tirajii.Models.User
 {
     public class LoginViewModel
     {

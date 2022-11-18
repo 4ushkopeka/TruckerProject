@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Tirajii.Models
+namespace Tirajii.Models.User
 {
     public class RegisterViewModel
     {
@@ -20,6 +20,5 @@ namespace Tirajii.Models
         [Required]
         [Compare(nameof(Password))]
         public string ConfirmPassword { get; set; }
-
     }
 }

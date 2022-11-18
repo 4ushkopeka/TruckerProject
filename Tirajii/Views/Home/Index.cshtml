@@ -1,4 +1,8 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using Tirajii.Data.Models
+@inject SignInManager<User> SignInManager;
+@inject UserManager<User> UserManager;
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -53,7 +57,41 @@
 <h4 class="text-center">Become a trucker or register your own company!</h4>
 <br />
 <br />
-<center>
-<button type="button" class="btn btn-outline-primary">Become a trucker</button>
-    <button type="button" class="btn btn-outline-secondary">Register your company</button>
-</center>
+@if (SignInManager.IsSignedIn(User))
+{
+    <form method="post">
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="Register" asp-controller="Trucker">Become a trucker!</button>
+            <button type="submit" class="btn btn-outline-secondary" asp-area="" asp-action="Register" asp-controller="Company">Register your company!</button>
+        </div>
+    </form>
+}
+else
+{
+    <div class="d-grid gap-2">
+    <button type="submit" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Become a trucker!
+    </button>
+    <button type="submit" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Register your company!
+    </button>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Error!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    You must Log in/Register first!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+

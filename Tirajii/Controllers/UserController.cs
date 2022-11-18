@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tirajii.Data.Models;
-using Tirajii.Models;
+using Tirajii.Models.User;
 
 namespace Tirajii.Controllers
 {
@@ -22,7 +22,7 @@ namespace Tirajii.Controllers
         {
             if (User?.Identity?.IsAuthenticated ?? false)
             {
-                return RedirectToAction("All", "Movies");
+                return RedirectToAction("Index", "Home");
             }
             var mod = new LoginViewModel();
             return View(mod);
@@ -41,7 +41,7 @@ namespace Tirajii.Controllers
                 var result = await signManager.PasswordSignInAsync(user, model.Password, false, false);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("All", "Movies");
+                    return RedirectToAction("Index", "Home");
                 }
             }
             ModelState.AddModelError("", "Login failed.");
@@ -53,7 +53,7 @@ namespace Tirajii.Controllers
         {
             if (User?.Identity?.IsAuthenticated ?? false)
             {
-                return RedirectToAction("All", "Movies");
+                return RedirectToAction("Index", "Home");
             }
             var model = new RegisterViewModel();
             return View(model);
@@ -69,8 +69,7 @@ namespace Tirajii.Controllers
             var user = new User
             {
                 Email = model.Email,
-                UserName = model.UserName,
-                FullName = model.FullName
+                UserName = model.UserName
             };
             var result = await userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)

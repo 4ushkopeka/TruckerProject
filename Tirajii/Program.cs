@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Tirajii.Data;
 using Tirajii.Data.Models;
+using Tirajii.Services;
+using Tirajii.Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<TruckersDbContext>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ITruckerService, TruckerService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/User/Login";

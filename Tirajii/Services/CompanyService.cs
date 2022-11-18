@@ -1,6 +1,8 @@
-﻿namespace Tirajii.Services
+﻿using Tirajii.Services.Contracts;
+
+namespace Tirajii.Services
 {
-    public class CompanyService
+    public class CompanyService:ICompanyService
     {
     }
 }

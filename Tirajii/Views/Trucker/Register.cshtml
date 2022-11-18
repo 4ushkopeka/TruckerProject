@@ -1,0 +1,48 @@
+﻿@using Tirajii.Data
+@using Tirajii.Models.Trucker;
+@model TruckerRegisterViewModel
+@inject TruckersDbContext context
+<h1 class="text-center">@ViewData["Title"]</h1>
+<hr />
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 offset-lg-3 col-lg-8 offset-xl-3 col-xl-6">
+            <h2 class="mt-1 text-center">@ViewBag.Title</h2>
+            <form method="post">
+                <div class="mb-3">
+                    <label asp-for="FullName"></label>
+                    <input asp-for="FullName" class="form-control" placeholder="Your Fullname here">
+                    <span asp-validation-for="FullName" class="small text-danger"> </span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Description"></label>
+                    <textarea asp-for="Description" rows="4" class="form-control" placeholder="Type a description for you collection! "></textarea>
+                    <span asp-validation-for="Description" class="small text-danger"> </span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="ProfilePicture"></label>
+                    <input asp-for="ProfilePicture" class="form-control" placeholder="Your profile picture here(can be left empty)">
+                    <span asp-validation-for="ProfilePicture" class="small text-danger"> </span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="BirthDate"></label>
+                    <input type="date" asp-for="BirthDate" class="form-control" placeholder="dd/mm/yyyy">
+                    <span asp-validation-for="BirthDate" class="small text-danger"> </span>
+                </div>
+                <div class"form-group">
+                    <label asp-for="TruckingCategory"></label>
+                    <select asp-for="TruckingCategory" class="form-select" placeholder="Your specialization:">
+                        @foreach (var category in context.TrailerTypes)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="d-grid d-md-block mt-3">
+                    <button class="btn btn-primary mt-3" type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
