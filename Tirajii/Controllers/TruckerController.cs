@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Tirajii.Data.Models;
 using Tirajii.Models.Trucker;
 using Tirajii.Services;
 using Tirajii.Services.Contracts;
@@ -10,15 +12,20 @@ namespace Tirajii.Controllers
     [Authorize]
     public class TruckerController : Controller
     {
+        private readonly UserManager<User> userManager;
         private readonly ITruckerService trService;
-        public TruckerController(ITruckerService _trService)
+        public TruckerController(ITruckerService _trService, UserManager<User> _userManager)
         {
             trService = _trService;
+            userManager = _userManager;
         }
         [HttpGet]
-        public IActionResult Register()
+        public async Task<IActionResult> Register()
         {
-            var model = new TruckerRegisterViewModel();
+            var model = new TruckerRegisterViewModel
+            {
+                TruckingCategories =  await trService.GetAllCategories()
+            };
             return View(model);
         }
         [HttpPost]
@@ -31,12 +38,13 @@ namespace Tirajii.Controllers
             try
             {
                 var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (userId == null) throw new Exception("Invalid User!");
                 await trService.RegisterTrucker(model, userId);
-                return RedirectToAction(nameof(Offers));
+                return RedirectToAction("Index", "Home");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Something went wrong");
+                ModelState.AddModelError("", ex.Message);
                 return View(model);
             }
         }

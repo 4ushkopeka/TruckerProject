@@ -4,8 +4,6 @@ namespace Tirajii.Models.User
 {
     public class RegisterViewModel
     {
-        [Required]
-        public string FullName { get; set; }
         [EmailAddress]
         [Required]
         public string Email { get; set; }

@@ -2,14 +2,15 @@
 
 namespace Tirajii.Data.Models
 {
-    public class OfferCategory
+    public class TruckClass
     {
         [Key]
         public int Id { get; set; }
-        
+
         [Required]
         public string Name { get; set; }
 
-        public ICollection<Offer> Offers { get; set; } = new List<Offer>();
+        public ICollection<Truck> Trucks { get; set; } = new List<Truck>();
+
     }
 }

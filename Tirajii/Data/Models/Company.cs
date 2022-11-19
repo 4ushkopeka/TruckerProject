@@ -11,6 +11,7 @@ namespace Tirajii.Data.Models
 
         [Required]
         public string Name { get; set; }
+
         [Required]
         [Range(0, 10)]
         [Column(TypeName = "decimal(2,2)")]
@@ -27,6 +28,10 @@ namespace Tirajii.Data.Models
         public string OwnerId { get; set; }
 
         public User Owner { get; set; }
+
+        [Required]
+        [Url]
+        public string Picture { get; set; }
 
         public ICollection<Offer> Offers { get; set; } = new List<Offer>();
     }

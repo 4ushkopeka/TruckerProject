@@ -10,12 +10,15 @@ namespace Tirajii.Data.Models
 
         [Required]
         public string Description { get; set; }
+        
+        [Required]
+        public string Name { get; set; }
 
         [Required]
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
 
-        public OfferCategory Category { get; set; }
+        public TruckingCategory Category { get; set; }
 
         [Required]
         public DateTime DueDate { get; set; }
@@ -29,7 +32,7 @@ namespace Tirajii.Data.Models
         [ForeignKey(nameof(Trucker))]
         public int? TruckerId { get; set; }
 
-        public Trucker Trucker { get; set; }
+        public Trucker? Trucker { get; set; }
 
         [Required]
         [Range(0,10000)]

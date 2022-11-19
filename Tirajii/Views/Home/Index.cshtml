@@ -53,18 +53,44 @@
 </div>
 <hr />
 <br />
-<h4 class ="text-center">What are you waiting for?</h4>
-<h4 class="text-center">Become a trucker or register your own company!</h4>
-<br />
-<br />
 @if (SignInManager.IsSignedIn(User))
 {
-    <form method="post">
-        <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="Register" asp-controller="Trucker">Become a trucker!</button>
-            <button type="submit" class="btn btn-outline-secondary" asp-area="" asp-action="Register" asp-controller="Company">Register your company!</button>
-        </div>
-    </form>
+    var user = UserManager.FindByNameAsync(User.Identity.Name);
+    if (!user.Result.IsTrucker && !user.Result.IsCompanyOwner)
+    {
+        <h4 class="text-center">What are you waiting for?</h4>
+        <h4 class="text-center">Become a trucker or register your own company!</h4>
+        <br />
+        <br />
+        <form method="get">
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="Register" asp-controller="Trucker">Become a trucker!</button>
+                <button type="submit" class="btn btn-outline-secondary" asp-area="" asp-action="Register" asp-controller="Company">Register your company!</button>
+            </div>
+        </form>
+    }
+    else if (user.Result.IsTrucker)
+    {
+        <h4 class="text-center">Get the latest offers...</h4>
+        <h4 class="text-center">Or perhaps configure your truck?</h4>
+        <br />
+        <br />
+        <form method="get">
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="Offers" asp-controller="Trucker">Browse Offers</button>
+                <button type="submit" class="btn btn-outline-secondary" asp-area="" asp-action="General" asp-controller="Truck">Configure your truck</button>
+            </div>
+        </form>
+    }
+    else
+    {
+        <form method="get">
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="OfferAdd" asp-controller="Company">Add an Offer</button>
+                <button type="submit" class="btn btn-outline-secondary" asp-area="" asp-action="OfferMine" asp-controller="Company">See what offers you provide</button>
+            </div>
+        </form>
+    }
 }
 else
 {

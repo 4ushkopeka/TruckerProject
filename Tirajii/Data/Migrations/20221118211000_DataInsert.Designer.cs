@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tirajii.Data;
 
@@ -11,9 +12,10 @@ using Tirajii.Data;
 namespace Tirajii.Data.Migrations
 {
     [DbContext(typeof(TruckersDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221118211000_DataInsert")]
+    partial class DataInsert
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,8 +191,7 @@ namespace Tirajii.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("OwnerId")
-                        .IsUnique();
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Companies");
                 });
@@ -250,10 +251,6 @@ namespace Tirajii.Data.Migrations
 
                     b.Property<bool>("IsTaken")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Payment")
                         .HasColumnType("decimal(5,2)");
@@ -570,8 +567,8 @@ namespace Tirajii.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Tirajii.Data.Models.User", "Owner")
-                        .WithOne("Company")
-                        .HasForeignKey("Tirajii.Data.Models.Company", "OwnerId")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -643,9 +640,9 @@ namespace Tirajii.Data.Migrations
                         .HasForeignKey("TruckId");
 
                     b.HasOne("Tirajii.Data.Models.User", "User")
-                        .WithOne("Trucker")
+                        .WithOne()
                         .HasForeignKey("Tirajii.Data.Models.Trucker", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -680,13 +677,6 @@ namespace Tirajii.Data.Migrations
                     b.Navigation("Offers");
 
                     b.Navigation("Truckers");
-                });
-
-            modelBuilder.Entity("Tirajii.Data.Models.User", b =>
-                {
-                    b.Navigation("Company");
-
-                    b.Navigation("Trucker");
                 });
 #pragma warning restore 612, 618
         }

@@ -14,7 +14,7 @@ namespace Tirajii.Models.Trucker
         public string Email { get; set; }
 
         [Required]
-        public DateTime BirthDate { get; set; }
+        public string BirthDate { get; set; }
 
         [Required]
         [StringLength(500, MinimumLength =0)]
@@ -31,6 +31,9 @@ namespace Tirajii.Models.Trucker
         public string? ProfilePicture { get; set; }
 
         [Required]
-        public TrailerType TruckingCategory { get; set; }
+        public int CategoryId { get; set; }
+
+        [Required]
+        public ICollection<TruckingCategory> TruckingCategories { get; set; } = new List<TruckingCategory>();
     }
 }
