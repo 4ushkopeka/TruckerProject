@@ -18,11 +18,20 @@ namespace Tirajii.Data
         public DbSet<CompanyCategory> CompanyCategories { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Offer> Offers { get; set; }
+        public DbSet<TruckOffer> TruckOffers { get; set; }
         public DbSet<Trucker> Truckers { get; set; }
         public DbSet<Truck> Trucks { get; set; }
         public DbSet<TruckingCategory> TruckingCategories { get; set; }
+        public DbSet<TruckClass> TruckClasses { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<TruckOffer>(x =>
+            {
+                x.HasOne(x => x.Truck)
+                .WithOne(x => x.TruckOffer)
+                .HasForeignKey<TruckOffer>(x => x.TruckId)
+                .OnDelete(DeleteBehavior.NoAction);
+            });
             builder
             .Entity<TruckClass>()
                  .HasData(new TruckClass()

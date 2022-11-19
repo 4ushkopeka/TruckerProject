@@ -4,6 +4,8 @@ using Tirajii.Data;
 using Tirajii.Data.Models;
 using Tirajii.Services;
 using Tirajii.Services.Contracts;
+using AspNetCoreHero.ToastNotification.Abstractions;
+using AspNetCoreHero.ToastNotification;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,7 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ITruckerService, TruckerService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddNotyf(config => { config.DurationInSeconds = 5; config.IsDismissable = true; config.Position = NotyfPosition.TopRight; });
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/User/Login";

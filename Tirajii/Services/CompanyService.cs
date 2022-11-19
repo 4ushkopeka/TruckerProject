@@ -26,22 +26,28 @@ namespace Tirajii.Services
             {
                 throw new ArgumentException("Invalid date format!");
             }
-            Offer offer = new Offer() 
-            { 
+            Offer offer = new Offer()
+            {
                 DueDate = BDayval,
                 CategoryId = model.CategoryId,
                 Name = model.Name,
                 Description = model.Description,
                 Payment = model.Payment,
-                CompanyId = companyId
+                CompanyId = companyId,
+                IsApproved = true
             };
             await context.Offers.AddAsync(offer);
             await context.SaveChangesAsync();
         }
 
-        public async Task<List<CompanyCategory>> GetAllCategories()
+        public async Task<List<CompanyCategory>> GetAllCompanyCategories()
         {
             return await context.CompanyCategories.ToListAsync();
+        }
+
+        public async Task<List<TruckClass>> GetAllClasses()
+        {
+            return await context.TruckClasses.ToListAsync();
         }
 
         public async Task<List<TruckingCategory>> GetAllOfferCategories()
@@ -60,10 +66,74 @@ namespace Tirajii.Services
                 CategoryId = model.CategoryId,
                 Rating = 0
             };
-            user.IsCompanyOwner = true;
+            if (model.CategoryId==1) user.IsOfferCompanyOwner = true;
+            else user.IsTruckerCompanyOwner = true;
             user.Company = company;
             await context.Companies.AddAsync(company);
             await context.SaveChangesAsync();
+        }
+
+        public async Task RegisterTruck(TruckViewModel model, string userId)
+        {
+            var user = context.Users.Include(x => x.Company).First(x => x.Id == userId);
+            Truck truck = new Truck()
+            {
+                Name = model.Name,
+                CompanyId = user.Company.Id,
+                Picture = model.Picture,
+                ClassId= model.ClassId,
+                Colour = model.Colour,
+                IsForSale = false,
+                RegistrationNumber = model.RegistrationNumber,
+                HasBluetooth = model.HasBluetooth,
+                HasCDPlayer = model.HasCDPlayer,
+                HasInstaBrakes = model.HasInstaBrakes,
+                HasParkTronic = model.HasParkTronic,
+                HasSpeakers = model.HasSpeakers
+            };
+            await context.Trucks.AddAsync(truck);
+            await context.SaveChangesAsync();
+        }
+        public async Task AddTruckOffer(TruckOfferAddViewModel model, string userId)
+        {
+            var user = context.Users.Include(x => x.Company).First(x => x.Id == userId);
+            var truck = this.GetTruckById(model.truckId).Result;
+            TruckOffer offer = new TruckOffer()
+            {
+                Company = user.Company,
+                Description = model.Description,
+                Cost = model.Cost,
+                Truck = truck,
+                Name = model.Name,
+                IsApproved = true,
+                CompanyId = (int)model.CompanyId
+            };
+            truck.IsForSale = true;
+            await context.TruckOffers.AddAsync(offer);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<List<Truck>> GetMyTrucks(string userId)
+        {
+            var user = context.Users.Include(x => x.Company).First(x => x.Id == userId);
+            return await context.Trucks.Include(x => x.Class).Where(x => x.CompanyId == user.Company.Id && !x.IsForSale).ToListAsync();
+        }
+
+        public async Task<List<Offer>> GetMyOffers(string userId)
+        {
+            var user = context.Users.Include(x => x.Company).First(x => x.Id == userId);
+            return await context.Offers.Where(x => x.CompanyId == user.Company.Id).ToListAsync();
+        }
+
+        public async Task<List<TruckOffer>> GetMyTruckOffers(string userId)
+        {
+            var user = context.Users.Include(x => x.Company).First(x => x.Id == userId);
+            return await context.TruckOffers.Include(x => x.Truck).Where(x => x.CompanyId == user.Company.Id).ToListAsync();
+        }
+
+        public async Task<Truck> GetTruckById(int truckId)
+        {
+            return await context.Trucks.FirstAsync(x => x.Id == truckId);
         }
     }
 }

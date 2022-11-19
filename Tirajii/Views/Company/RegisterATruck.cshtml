@@ -1,0 +1,92 @@
+﻿@using Tirajii.Data
+@using Tirajii.Models.Trucker;
+@using Tirajii.Models.Company;
+@model TruckViewModel
+<h1 class="text-center">Register a Truck!</h1>
+<hr />
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 offset-lg-3 col-lg-8 offset-xl-3 col-xl-6">
+            <h2 class="mt-1 text-center">@ViewBag.Title</h2>
+            <form method="post">
+                <div class="mb-3">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="form-control" placeholder="">
+                    <span asp-validation-for="Name" class="small text-danger"> </span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="HasSpeakers">Does it have speakers?</label><br />
+                    <input type="radio" id="html" asp-for="HasSpeakers" name="fav_language" value="true">
+                    <label for="html">Yes</label><br>
+                    <input type="radio" id="css" asp-for="HasSpeakers" name="fav_language" value="false">
+                    <label for="css">No</label><br>
+                    <span asp-validation-for="HasSpeakers" class="small text-danger"> </span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="HasParkTronic">Does it have Parktronic?</label><br />
+                    <input type="radio" id="html" asp-for="HasParkTronic" name="1" value="true">
+                    <label for="html">Yes</label><br>
+                    <input type="radio" id="css" asp-for="HasParkTronic" name="1" value="false">
+                    <label for="css">No</label><br>
+                    <span asp-validation-for="HasParkTronic" class="small text-danger"> </span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="HasCDPlayer">Does it have a CD player?</label><br />
+                    <input type="radio" id="html" asp-for="HasCDPlayer" name="2" value="true">
+                    <label for="html">Yes</label><br>
+                    <input type="radio" id="css" asp-for="HasCDPlayer" name="2" value="false">
+                    <label for="css">No</label><br>
+                    <span asp-validation-for="HasCDPlayer" class="small text-danger"> </span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="HasBluetooth">Does it have bluetooth?</label><br />
+                    <input type="radio" id="html" asp-for="HasBluetooth" name="3" value="true">
+                    <label for="html">Yes</label><br>
+                    <input type="radio" id="css" asp-for="HasBluetooth" name="3" value="false">
+                    <label for="css">No</label><br>
+                    <span asp-validation-for="HasBluetooth" class="small text-danger"> </span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="HasInstaBrakes">Does it have instant brakes?</label><br />
+                    <input type="radio" id="html" asp-for="HasInstaBrakes" name="4" value="true">
+                    <label for="html">Yes</label><br>
+                    <input type="radio" id="css" asp-for="HasInstaBrakes" name="4" value="false">
+                    <label for="css">No</label><br>
+                    <span asp-validation-for="HasInstaBrakes" class="small text-danger"> </span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Picture"></label>
+                    <input asp-for="Picture" class="form-control" placeholder="Your URL here...">
+                    <span asp-validation-for="Picture" class="small text-danger"> </span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Colour">Colour:</label>
+                    <input asp-for="Colour" class="form-control" placeholder="">
+                    <span asp-validation-for="Colour" class="small text-danger"> </span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="RegistrationNumber">Registration Number:</label>
+                    <input asp-for="RegistrationNumber" class="form-control" placeholder="Ex: AA 0000 BB">
+                    <span asp-validation-for="RegistrationNumber" class="small text-danger"> </span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ClassId">The Truck's class:</label>
+                    <select asp-for="ClassId" class="form-control">
+                        @foreach (var category in Model.Classes)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="ClassId" class="text-danger"></span>
+                </div>
+                <div class="d-grid d-md-block mt-3">
+                    <button class="btn btn-primary mt-3" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

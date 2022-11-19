@@ -20,6 +20,20 @@ namespace Tirajii.Data.Models
         public string? Name { get; set; }
 
         [Required]
+        public bool HasSpeakers { get; set; }
+
+        [Required]
+        public bool HasBluetooth { get; set; }
+
+        [Required]
+        public bool HasCDPlayer { get; set; }
+
+        [Required]
+        public bool HasParkTronic { get; set; }
+
+        [Required]
+        public bool HasInstaBrakes { get; set; }
+        [Required]
         public bool IsForSale { get; set; }
 
         [ForeignKey(nameof(Owner))]
@@ -33,10 +47,16 @@ namespace Tirajii.Data.Models
 
         public TruckClass Class { get; set; }
 
+        public TruckOffer? TruckOffer { get; set; }
+
         [Required]
         [ForeignKey(nameof(Company))]
-        public int? CompanyId { get; set; }
+        public int CompanyId { get; set; }
 
-        public Company? Company { get; set; }
+        public Company Company { get; set; }
+
+        [Required]
+        [Url]
+        public string Picture { get; set; }
     }
 }

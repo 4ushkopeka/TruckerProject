@@ -56,7 +56,7 @@
 @if (SignInManager.IsSignedIn(User))
 {
     var user = UserManager.FindByNameAsync(User.Identity.Name);
-    if (!user.Result.IsTrucker && !user.Result.IsCompanyOwner)
+    if (!user.Result.IsTrucker && !user.Result.IsTruckerCompanyOwner && !user.Result.IsOfferCompanyOwner)
     {
         <h4 class="text-center">What are you waiting for?</h4>
         <h4 class="text-center">Become a trucker or register your own company!</h4>
@@ -84,12 +84,24 @@
     }
     else
     {
-        <form method="get">
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="OfferAdd" asp-controller="Company">Add an Offer</button>
-                <button type="submit" class="btn btn-outline-secondary" asp-area="" asp-action="OfferMine" asp-controller="Company">See what offers you provide</button>
-            </div>
-        </form>
+        if (user.Result.IsTruckerCompanyOwner)
+        {
+            <form method="get">
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="RegisterATruck" asp-controller="Company">Register a new truck</button>
+                    <button type="submit" class="btn btn-outline-secondary" asp-area="" asp-action="GetMyTrucks" asp-controller="Company">Add a truck Offer</button>
+                </div>
+            </form>
+        }
+        else
+        {
+            <form method="get">
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="OfferAdd" asp-controller="Company">Add an Offer</button>
+                    <button type="submit" class="btn btn-outline-secondary" asp-area="" asp-action="OfferMine" asp-controller="Company">See what offers you provide</button>
+                </div>
+            </form>
+        }
     }
 }
 else

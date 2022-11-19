@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Humanizer;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Tirajii.Data.Models
@@ -44,5 +45,8 @@ namespace Tirajii.Data.Models
 
         [Required]
         public bool IsCompleted { get; set; }
+
+        public bool IsApproved { get; set; }
+
     }
 }

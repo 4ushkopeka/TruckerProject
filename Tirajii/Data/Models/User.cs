@@ -8,7 +8,9 @@ namespace Tirajii.Data.Models
     {
         public bool IsTrucker { get; set; }
 
-        public bool IsCompanyOwner { get; set; }
+        public bool IsTruckerCompanyOwner { get; set; }
+
+        public bool IsOfferCompanyOwner { get; set; }
 
         public Trucker? Trucker { get; set; }
 

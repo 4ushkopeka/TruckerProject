@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tirajii.Data;
 
@@ -11,9 +12,10 @@ using Tirajii.Data;
 namespace Tirajii.Data.Migrations
 {
     [DbContext(typeof(TruckersDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221119182810_Polished")]
+    partial class Polished
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -192,7 +194,7 @@ namespace Tirajii.Data.Migrations
                     b.HasIndex("OwnerId")
                         .IsUnique();
 
-                    b.ToTable("Companies", (string)null);
+                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("Tirajii.Data.Models.CompanyCategory", b =>
@@ -209,7 +211,7 @@ namespace Tirajii.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CompanyCategories", (string)null);
+                    b.ToTable("CompanyCategories");
 
                     b.HasData(
                         new
@@ -272,7 +274,7 @@ namespace Tirajii.Data.Migrations
 
                     b.HasIndex("TruckerId");
 
-                    b.ToTable("Offers", (string)null);
+                    b.ToTable("Offers");
                 });
 
             modelBuilder.Entity("Tirajii.Data.Models.Truck", b =>
@@ -334,7 +336,7 @@ namespace Tirajii.Data.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Trucks", (string)null);
+                    b.ToTable("Trucks");
                 });
 
             modelBuilder.Entity("Tirajii.Data.Models.TruckClass", b =>
@@ -351,7 +353,7 @@ namespace Tirajii.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TruckClasses", (string)null);
+                    b.ToTable("TruckClasses");
 
                     b.HasData(
                         new
@@ -427,7 +429,7 @@ namespace Tirajii.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Truckers", (string)null);
+                    b.ToTable("Truckers");
                 });
 
             modelBuilder.Entity("Tirajii.Data.Models.TruckingCategory", b =>
@@ -444,7 +446,7 @@ namespace Tirajii.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TruckingCategories", (string)null);
+                    b.ToTable("TruckingCategories");
 
                     b.HasData(
                         new
@@ -502,7 +504,7 @@ namespace Tirajii.Data.Migrations
                     b.HasIndex("TruckId")
                         .IsUnique();
 
-                    b.ToTable("TruckOffers", (string)null);
+                    b.ToTable("TruckOffers");
                 });
 
             modelBuilder.Entity("Tirajii.Data.Models.User", b =>

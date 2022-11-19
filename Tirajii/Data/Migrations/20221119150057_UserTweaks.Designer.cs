@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tirajii.Data;
 
@@ -11,9 +12,10 @@ using Tirajii.Data;
 namespace Tirajii.Data.Migrations
 {
     [DbContext(typeof(TruckersDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221119150057_UserTweaks")]
+    partial class UserTweaks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -192,7 +194,7 @@ namespace Tirajii.Data.Migrations
                     b.HasIndex("OwnerId")
                         .IsUnique();
 
-                    b.ToTable("Companies", (string)null);
+                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("Tirajii.Data.Models.CompanyCategory", b =>
@@ -209,7 +211,7 @@ namespace Tirajii.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CompanyCategories", (string)null);
+                    b.ToTable("CompanyCategories");
 
                     b.HasData(
                         new
@@ -245,9 +247,6 @@ namespace Tirajii.Data.Migrations
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
 
@@ -272,7 +271,7 @@ namespace Tirajii.Data.Migrations
 
                     b.HasIndex("TruckerId");
 
-                    b.ToTable("Offers", (string)null);
+                    b.ToTable("Offers");
                 });
 
             modelBuilder.Entity("Tirajii.Data.Models.Truck", b =>
@@ -290,7 +289,8 @@ namespace Tirajii.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CompanyId")
+                    b.Property<int?>("CompanyId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<bool>("HasBluetooth")
@@ -334,7 +334,7 @@ namespace Tirajii.Data.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Trucks", (string)null);
+                    b.ToTable("Trucks");
                 });
 
             modelBuilder.Entity("Tirajii.Data.Models.TruckClass", b =>
@@ -351,7 +351,7 @@ namespace Tirajii.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TruckClasses", (string)null);
+                    b.ToTable("TruckClasses");
 
                     b.HasData(
                         new
@@ -427,7 +427,7 @@ namespace Tirajii.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Truckers", (string)null);
+                    b.ToTable("Truckers");
                 });
 
             modelBuilder.Entity("Tirajii.Data.Models.TruckingCategory", b =>
@@ -444,7 +444,7 @@ namespace Tirajii.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TruckingCategories", (string)null);
+                    b.ToTable("TruckingCategories");
 
                     b.HasData(
                         new
@@ -462,47 +462,6 @@ namespace Tirajii.Data.Migrations
                             Id = 3,
                             Name = "Items"
                         });
-                });
-
-            modelBuilder.Entity("Tirajii.Data.Models.TruckOffer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsBought")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TruckId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("TruckId")
-                        .IsUnique();
-
-                    b.ToTable("TruckOffers", (string)null);
                 });
 
             modelBuilder.Entity("Tirajii.Data.Models.User", b =>
@@ -724,25 +683,6 @@ namespace Tirajii.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Tirajii.Data.Models.TruckOffer", b =>
-                {
-                    b.HasOne("Tirajii.Data.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Tirajii.Data.Models.Truck", "Truck")
-                        .WithOne("TruckOffer")
-                        .HasForeignKey("Tirajii.Data.Models.TruckOffer", "TruckId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-
-                    b.Navigation("Truck");
-                });
-
             modelBuilder.Entity("Tirajii.Data.Models.Company", b =>
                 {
                     b.Navigation("Offers");
@@ -751,11 +691,6 @@ namespace Tirajii.Data.Migrations
             modelBuilder.Entity("Tirajii.Data.Models.CompanyCategory", b =>
                 {
                     b.Navigation("Companies");
-                });
-
-            modelBuilder.Entity("Tirajii.Data.Models.Truck", b =>
-                {
-                    b.Navigation("TruckOffer");
                 });
 
             modelBuilder.Entity("Tirajii.Data.Models.TruckClass", b =>
