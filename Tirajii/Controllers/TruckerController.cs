@@ -65,7 +65,7 @@ namespace Tirajii.Controllers
             return View(model);
         }
         [HttpGet]
-        public async Task<IActionResult> TruckOffersAll(AllTruckOffersViewModel model)
+        public IActionResult TruckOffersAll(AllTruckOffersViewModel model)
         {
             var result = truckerService.GetAllTruckOffers(model.Category,
                 model.SearchTerm,

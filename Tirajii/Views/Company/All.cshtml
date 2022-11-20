@@ -1,5 +1,8 @@
-﻿@using Tirajii.Data.Models
+﻿@using Microsoft.AspNetCore.Identity
+@using Tirajii.Data.Models
+@using Tirajii.Infrastructure.Extensions
 @model IEnumerable<Company>
+@inject UserManager<User> userManager
 <h1 class="text-center">All Companies</h1>
 <hr />
 <br />
@@ -13,10 +16,15 @@
                 <p class="mb-0">Rating: @item.Rating</p>
                 <p>Company Category: @item.Category.Name</p>
                 <p>Owner: @item.Owner.NormalizedUserName.ToLower()</p>
-                <form method="get">
-                    <button asp-route-id="@item.Id" asp-action="RateACompany" asp-controller="Trucker" class="btn btn-primary">Rate</button>
-                </form>
-
+                @{
+                    var user = userManager.FindByIdAsync(User.Id()).Result;
+                    if (user.IsTrucker)
+                    {
+                        <form method="get">
+                            <button asp-route-id="@item.Id" asp-action="RateACompany" asp-controller="Trucker" class="btn btn-primary">Rate</button>
+                        </form>
+                    }
+                }
             </div>
         </div>
     }

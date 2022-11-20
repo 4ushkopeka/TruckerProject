@@ -17,41 +17,41 @@
                 </div>
                 <div class="mb-3">
                     <label asp-for="HasSpeakers">Does it have speakers?</label><br />
-                    <input type="radio" id="html" asp-for="HasSpeakers" name="fav_language" value="true">
+                    <input type="radio" id="html" asp-for="@Model.HasSpeakers" name="HasSpeakers" value="true">
                     <label for="html">Yes</label><br>
-                    <input type="radio" id="css" asp-for="HasSpeakers" name="fav_language" value="false">
+                    <input type="radio" id="css" asp-for="@Model.HasSpeakers" name="HasSpeakers" value="false">
                     <label for="css">No</label><br>
                     <span asp-validation-for="HasSpeakers" class="small text-danger"> </span>
                 </div>
                 <div class="mb-3">
                     <label asp-for="HasParkTronic">Does it have Parktronic?</label><br />
-                    <input type="radio" id="html" asp-for="HasParkTronic" name="1" value="true">
+                    <input type="radio" id="html" asp-for="@Model.HasParkTronic" name="HasParkTronic" value="true">
                     <label for="html">Yes</label><br>
-                    <input type="radio" id="css" asp-for="HasParkTronic" name="1" value="false">
+                    <input type="radio" id="css" asp-for="@Model.HasParkTronic" name="HasParkTronic" value="false">
                     <label for="css">No</label><br>
                     <span asp-validation-for="HasParkTronic" class="small text-danger"> </span>
                 </div>
                 <div class="mb-3">
                     <label asp-for="HasCDPlayer">Does it have a CD player?</label><br />
-                    <input type="radio" id="html" asp-for="HasCDPlayer" name="2" value="true">
+                    <input type="radio" id="html" asp-for="@Model.HasCDPlayer" name="HasCDPlayer" value="true">
                     <label for="html">Yes</label><br>
-                    <input type="radio" id="css" asp-for="HasCDPlayer" name="2" value="false">
+                    <input type="radio" id="css" asp-for="@Model.HasCDPlayer" name="HasCDPlayer" value="false">
                     <label for="css">No</label><br>
                     <span asp-validation-for="HasCDPlayer" class="small text-danger"> </span>
                 </div>
                 <div class="mb-3">
                     <label asp-for="HasBluetooth">Does it have bluetooth?</label><br />
-                    <input type="radio" id="html" asp-for="HasBluetooth" name="3" value="true">
+                    <input type="radio" id="html" asp-for="@Model.HasBluetooth" name="HasBluetooth" value="true">
                     <label for="html">Yes</label><br>
-                    <input type="radio" id="css" asp-for="HasBluetooth" name="3" value="false">
+                    <input type="radio" id="css" asp-for="@Model.HasBluetooth" name="HasBluetooth" value="false">
                     <label for="css">No</label><br>
                     <span asp-validation-for="HasBluetooth" class="small text-danger"> </span>
                 </div>
                 <div class="mb-3">
                     <label asp-for="HasInstaBrakes">Does it have instant brakes?</label><br />
-                    <input type="radio" id="html" asp-for="HasInstaBrakes" name="4" value="true">
+                    <input type="radio" id="html" asp-for="@Model.HasInstaBrakes" name="HasInstaBrakes" value="true">
                     <label for="html">Yes</label><br>
-                    <input type="radio" id="css" asp-for="HasInstaBrakes" name="4" value="false">
+                    <input type="radio" id="css" asp-for="@Model.HasInstaBrakes" name="HasInstaBrakes" value="false">
                     <label for="css">No</label><br>
                     <span asp-validation-for="HasInstaBrakes" class="small text-danger"> </span>
                 </div>

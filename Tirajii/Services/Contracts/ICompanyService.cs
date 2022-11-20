@@ -15,6 +15,7 @@ namespace Tirajii.Services.Contracts
         Task<List<TruckClass>> GetAllClasses();
 
         Task<List<Truck>> GetMyTrucks(string userId);
+        Task<List<Truck>> GetMyTrucksForOffer(string userId);
 
         Task<List<Offer>> GetMyOffers(string userId);
 

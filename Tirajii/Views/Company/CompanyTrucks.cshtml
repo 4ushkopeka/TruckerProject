@@ -6,6 +6,13 @@
 <hr />
 <br />
 <div class="text-center row">
+    @if (!Model.Any())
+    {
+        <h2>Looks like you dont have any spare trucks, how about you add one?</h2>
+        <form method="get">
+            <button asp-action="RegisterATruck" asp-controller="Company" class="btn btn-primary">Register a new truck</button>
+        </form>
+    }
     @foreach (var item in Model)
     {
         <div class="card" style="width: 18rem;">
@@ -17,7 +24,6 @@
                 <form method="get">
                     <button asp-route-id="@item.Id" asp-action="TruckOfferAdd" asp-controller="Company" class="btn btn-primary">Select</button>
                 </form>
-                
             </div>
         </div>
     }

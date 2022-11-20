@@ -97,7 +97,7 @@ namespace Tirajii.Controllers
         public async Task<IActionResult> GetMyTrucks()
         {
             var userId = this.User.Id();
-            var trucks = await companyService.GetMyTrucks(userId);
+            var trucks = await companyService.GetMyTrucksForOffer(userId);
             return View("CompanyTrucks",trucks);
         }
         [HttpPost]

@@ -14,20 +14,21 @@
                 <h5 class="card-title">@item.Name</h5>
                 @if (!item.IsApproved)
                 {
-                    <h6 class="card-text">Is Approved: <img src="~/pictures/xmark-solid.svg" width="17" height="17" /> </h6>
+                    <h6 class="card-text">Is Approved: <img src="~/pictures/xmark-solid.svg" width="15" height="15" /> </h6>
                 }
                 else
                 {
-                    <h6 class="card-text">Is Approved: <img src="~/pictures/check-solid.svg" width="17" height="17" /></h6>
+                    <h6 class="card-text">Is Approved: <img src="~/pictures/check-solid.svg" width="15" height="15" /></h6>
                 }
                 @if (!item.IsBought)
                 {
-                    <h6 class="card-subtitle mb-2 text-muted">Is Bought: <img src="~/pictures/xmark-solid.svg" width="17" height="17"/></h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Is Bought: <img src="~/pictures/xmark-solid.svg" width="15" height="15"/></h6>
                 }
                 else
                 {
-                    <h6 class="card-subtitle mb-2 text-muted">Is Bought: <img src="~/pictures/check-solid.svg" width="17" height="17" /></h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Is Bought: <img src="~/pictures/check-solid.svg" width="15" height="15" /></h6>
                 }
+                <p class="card-text">Description:</p>            
                 <p class="card-text">@item.Description</p>            
             </div>
         </div>

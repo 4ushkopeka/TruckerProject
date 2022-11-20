@@ -140,5 +140,11 @@ namespace Tirajii.Services
         {
             return await context.Companies.Include(x => x.Category).Include(x => x.Owner).ToListAsync();
         }
+
+        public async Task<List<Truck>> GetMyTrucksForOffer(string userId)
+        {
+            var user = context.Users.Include(x => x.Company).First(x => x.Id == userId);
+            return await context.Trucks.Include(x => x.Class).Where(x => x.CompanyId == user.Company.Id && !x.IsForSale).ToListAsync();
+        }
     }
 }
