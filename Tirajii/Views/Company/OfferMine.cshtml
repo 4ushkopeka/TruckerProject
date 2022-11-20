@@ -2,7 +2,7 @@
 @using Tirajii.Models.Trucker;
 @using Tirajii.Models.Company;
 @model IEnumerable<Offer>
-<h1 class="text-center">Add an Offer!</h1>
+<h1 class="text-center">My Offers:</h1>
 <hr />
 <br />
 <div class="text-center row">
@@ -12,14 +12,35 @@
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
                     <h5 class="card-title">@item.Name</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Reward: @item.Payment</h6>
+                    @if (!item.IsApproved)
+                    {
+                        <h6 class="card-subtitle mb-2 text-muted">Is Approved: <img src="~/pictures/xmark-solid.svg" width="10" height="10" /> </h6>
+                    }
+                    else
+                    {
+                        <h6 class="card-subtitle mb-2 text-muted">Is Approved: <img src="~/pictures/check-solid.svg" width="10" height="10" /></h6>
+                    }
+                    <h6 class="">Reward: @item.Payment</h6>
                     <p class="card-text">@item.Description</p>
                     <p class="card-text">Company: @item.Company.Name</p>
                     <p class="card-text">Due Date: @item.DueDate</p>
                     <p class="card-text">Category: @item.Category.Name</p>
-                    <p class="card-text">Is Taken: @item.IsTaken</p>
-                    <p class="card-text">Is Completed: @item.IsCompleted</p>
-                    <p class="card-text">Is Approved: @item.IsApproved</p>
+                    @if (!item.IsTaken)
+                    {
+                        <h6 class="card-subtitle mb-2 text-muted">Is Taken: <img src="~/pictures/xmark-solid.svg" width="10" height="10" /> </h6>
+                    }
+                    else
+                    {
+                        <h6 class="card-subtitle mb-2 text-muted">Is Taken: <img src="~/pictures/check-solid.svg" width="10" height="10" /></h6>
+                    }
+                    @if (!item.IsCompleted)
+                    {
+                        <p>Is Completed: <img src="~/pictures/xmark-solid.svg" width="10" height="10" /> </p>
+                    }
+                    else
+                    {
+                        <p>Is Completed: <img src="~/pictures/check-solid.svg" width="10" height="10" /></p>
+                    }
                 </div>
             </div>
         </div>

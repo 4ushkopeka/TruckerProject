@@ -1,0 +1,61 @@
+﻿@using Tirajii.Data.Models
+@model IEnumerable<TruckOffer>
+<div class="text-center row">
+
+    @foreach (var item in Model)
+    {
+        <div class="card" style="width: 18rem;">
+            <img src="@item.Truck.Picture" class="card-img-top" alt="Truck Picture">
+            <div class="card-body">
+                <h5 class="card-title">@item.Name</h5>
+                <p class="card-subtitle">Provided by: @item.Company.Name</p>
+                <p class="card-text">Cost: @item.Cost</p>
+                <p class="card-text">Description:</p>
+                <p class="card-text">@item.Description</p>
+                @if (!item.Truck.HasSpeakers)
+                {
+                   <p>Has Speakers: <img src="~/pictures/xmark-solid.svg" width="17" height="17" /> </p>
+                }
+                else
+                {
+                   <p>Has Speakers: <img src="~/pictures/check-solid.svg" width="17" height="17" /></p>
+                }
+                @if (!item.Truck.HasBluetooth)
+                {
+                    <p>Has Bluetooth: <img src="~/pictures/xmark-solid.svg" width="17" height="17" /> </p>
+                }
+                else
+                {
+                    <p>Has Bluetooth: <img src="~/pictures/check-solid.svg" width="17" height="17" /></p>
+                }
+                @if (!item.Truck.HasCDPlayer)
+                {
+                    <p>Has CD player: <img src="~/pictures/xmark-solid.svg" width="17" height="17" /> </p>
+                }
+                else
+                {
+                    <p>Has CD player: <img src="~/pictures/check-solid.svg" width="17" height="17" /></p>
+                }
+                @if (!item.Truck.HasInstaBrakes)
+                {
+                    <p>Has Instant brakes: <img src="~/pictures/xmark-solid.svg" width="17" height="17" /> </p>
+                }
+                else
+                {
+                    <p>Is Completed: <img src="~/pictures/check-solid.svg" width="17" height="17" /></p>
+                }
+                @if (!item.Truck.HasParkTronic)
+                {
+                    <p>Has Parktronic: <img src="~/pictures/xmark-solid.svg" width="17" height="17" /> </p>
+                }
+                else
+                {
+                    <p>Has Parktronic: <img src="~/pictures/check-solid.svg" width="17" height="17" /></p>
+                }
+                <form method="get">
+                    <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="BuyATruck" asp-controller="Trucker">Buy</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>

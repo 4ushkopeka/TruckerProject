@@ -13,19 +13,21 @@ namespace Tirajii.Controllers
     [Authorize]
     public class CompanyController : Controller
     {
-        private readonly ICompanyService cService;
+        private readonly ICompanyService companyService;
         private readonly INotyfService notyf;
-        public CompanyController(ICompanyService _cService, INotyfService _notyf)
+        private readonly IUserService userService;
+        public CompanyController(ICompanyService _cService, INotyfService _notyf, IUserService _userService)
         {
-            cService = _cService;
+            companyService = _cService;
             notyf = _notyf;
+            userService = _userService;
         }
         [HttpGet]
         public async Task<IActionResult> Register()
         {
             var model = new CompanyRegisterViewModel
             {
-                Categories = await cService.GetAllCompanyCategories()
+                Categories = await companyService.GetAllCompanyCategories()
             };
             return View(model);
         }
@@ -40,14 +42,14 @@ namespace Tirajii.Controllers
             {
                 var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (userId == null) throw new Exception("Invalid User!");
-                await cService.RegisterCompany(model, userId);
+                await companyService.RegisterCompany(model, userId);
                 notyf.Information("Welcome!");
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                notyf.Error("Something went wrong, please try again.");
+                notyf.Error(ex.Message);
                 return View(model);
             } 
         }
@@ -57,7 +59,7 @@ namespace Tirajii.Controllers
         {
             var model = new TruckViewModel
             {
-                Classes = await cService.GetAllClasses()
+                Classes = await companyService.GetAllClasses()
             };
             return View(model);
         }
@@ -72,15 +74,15 @@ namespace Tirajii.Controllers
             {
                 var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (userId == null) throw new Exception("Invalid User!");
-                await cService.RegisterTruck(model, userId);
+                await companyService.RegisterTruck(model, userId);
                 notyf.Success("Successfully registered a truck!");
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                notyf.Error("Something went wrong, please try again.");
-                return View(model);
+                notyf.Error(ex.Message);
+                return RedirectToAction("Index", "Home");
             }
         }
         [HttpGet]
@@ -97,14 +99,14 @@ namespace Tirajii.Controllers
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) throw new Exception("Invalid User!");
-            var trucks = await cService.GetMyTrucks(userId);
+            var trucks = await companyService.GetMyTrucks(userId);
             return View("CompanyTrucks",trucks);
         }
         [HttpPost]
         public async Task<IActionResult> TruckOfferAdd(TruckOfferAddViewModel model, int truckId, int companyId)
         {
             model.truckId = truckId;
-            model.CompanyId = cService.GetTruckById(truckId).Result.CompanyId;
+            model.CompanyId = companyService.GetTruckById(truckId).Result.CompanyId;
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -113,31 +115,31 @@ namespace Tirajii.Controllers
             {
                 var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (userId == null) throw new Exception("Invalid User!");
-                await cService.AddTruckOffer(model, userId);
+                await companyService.AddTruckOffer(model, userId);
                 notyf.Success("Successfully added an offer!");
                 return RedirectToAction("TruckOfferMine", "Company");
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                notyf.Error("Something went wrong, please try again.");
-                return View(model);
+                notyf.Error(ex.Message);
+                return RedirectToAction("Index", "Home");
             }
         }
         [HttpGet]
-        public IActionResult OfferMine()
+        public async Task<IActionResult> OfferMine()
         {
             try
             {
                 var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (userId == null) throw new Exception("Invalid User!");
-                var mine = cService.GetMyOffers(userId);
+                var mine = await companyService.GetMyOffers(userId);
                 return View(mine);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                notyf.Error("Something went wrong, please try again.");
+                notyf.Error(ex.Message);
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -148,13 +150,13 @@ namespace Tirajii.Controllers
             {
                 var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (userId == null) throw new Exception("Invalid User!");
-                var mine = cService.GetMyTruckOffers(userId).Result;
+                var mine = companyService.GetMyTruckOffers(userId).Result;
                 return View(mine);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                notyf.Error("Something went wrong, please try again.");
+                notyf.Error(ex.Message);
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -163,10 +165,35 @@ namespace Tirajii.Controllers
         {
             var model = new OfferAddViewModel()
             {
-                Categories = await cService.GetAllOfferCategories()
+                Categories = await companyService.GetAllOfferCategories()
             };
             return View(model);
         }
+        
+        [HttpGet]
+        public async Task<IActionResult> All()
+        {
+            var comps = await companyService.GetAllCompanies();
+            return View(comps);
+        }
+        [HttpGet]
+        public async Task<IActionResult> TrucksMine()
+        {
+            try
+            {
+                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (userId == null) throw new Exception("Invalid User!");
+                var trucks = await companyService.GetMyTrucks(userId);
+                return View(trucks);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                notyf.Error(ex.Message);
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> OfferAdd(OfferAddViewModel model)
         {
@@ -181,15 +208,15 @@ namespace Tirajii.Controllers
                 {
                     throw new ArgumentException("Invalid User");
                 }
-                await cService.AddOffer(model, userId);
+                await companyService.AddOffer(model, userId);
                 notyf.Success("Successfully added an offer!");
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(OfferMine));
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
-                notyf.Error("Something went wrong, please try again.");
-                return View(model);
+                notyf.Error(ex.Message);
+                return RedirectToAction("Index", "Home");
             }
         }
     }

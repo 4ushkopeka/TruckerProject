@@ -22,7 +22,7 @@ namespace Tirajii.Models.Company
         public int? CompanyId { get; set; }
 
         [Required]
-        [Range(0, 10000)]
+        [Range(0, 20000)]
         public decimal Payment { get; set; }
         public ICollection<TruckingCategory> Categories { get; set; } = new List<TruckingCategory>();
     }

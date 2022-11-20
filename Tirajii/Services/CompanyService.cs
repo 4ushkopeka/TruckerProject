@@ -122,7 +122,7 @@ namespace Tirajii.Services
         public async Task<List<Offer>> GetMyOffers(string userId)
         {
             var user = context.Users.Include(x => x.Company).First(x => x.Id == userId);
-            return await context.Offers.Where(x => x.CompanyId == user.Company.Id).ToListAsync();
+            return await context.Offers.Include(x => x.Category).Where(x => x.CompanyId == user.Company.Id).ToListAsync();
         }
 
         public async Task<List<TruckOffer>> GetMyTruckOffers(string userId)
@@ -134,6 +134,11 @@ namespace Tirajii.Services
         public async Task<Truck> GetTruckById(int truckId)
         {
             return await context.Trucks.FirstAsync(x => x.Id == truckId);
+        }
+
+        public async Task<List<Company>> GetAllCompanies()
+        {
+            return await context.Companies.Include(x => x.Category).Include(x => x.Owner).ToListAsync();
         }
     }
 }

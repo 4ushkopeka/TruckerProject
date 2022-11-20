@@ -6,6 +6,7 @@ using Tirajii.Data.Models;
 using Tirajii.Models.Trucker;
 using Tirajii.Services;
 using Tirajii.Services.Contracts;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Tirajii.Controllers
 {
@@ -13,10 +14,10 @@ namespace Tirajii.Controllers
     public class TruckerController : Controller
     {
         private readonly UserManager<User> userManager;
-        private readonly ITruckerService trService;
+        private readonly ITruckerService truckerService;
         public TruckerController(ITruckerService _trService, UserManager<User> _userManager)
         {
-            trService = _trService;
+            truckerService = _trService;
             userManager = _userManager;
         }
         [HttpGet]
@@ -24,7 +25,7 @@ namespace Tirajii.Controllers
         {
             var model = new TruckerRegisterViewModel
             {
-                TruckingCategories =  await trService.GetAllCategories()
+                TruckingCategories =  await truckerService.GetAllCategories()
             };
             return View(model);
         }
@@ -39,7 +40,7 @@ namespace Tirajii.Controllers
             {
                 var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (userId == null) throw new Exception("Invalid User!");
-                await trService.RegisterTrucker(model, userId);
+                await truckerService.RegisterTrucker(model, userId);
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
@@ -48,9 +49,35 @@ namespace Tirajii.Controllers
                 return View(model);
             }
         }
-        public IActionResult Offers()
+        [HttpGet]
+        public async Task<IActionResult> Offers(AllOffersViewModel model)
         {
-            return View();
+            var result = truckerService.GetAllOffers(model.Category,
+                model.SearchTerm,
+                model.Sorting,
+                model.CurrentPage);
+
+            var categories = await truckerService.GetAllCategories();
+
+            model.Offers = result.Offers;
+            model.Categories = categories;
+            model.TotalOffers = result.TotalOffers;
+            return View(model);
+        }
+        [HttpGet]
+        public async Task<IActionResult> TruckOffersAll(AllTruckOffersViewModel model)
+        {
+            var result = truckerService.GetAllTruckOffers(model.Category,
+                model.SearchTerm,
+                model.Sorting,
+                model.CurrentPage);
+
+            var categories = truckerService.GetAllClasses();
+
+            model.Offers = result.Offers;
+            model.Categories = categories;
+            model.TotalOffers = result.TotalOffers;
+            return View(model);
         }
         public IActionResult OffersMine()
         {

@@ -1,0 +1,32 @@
+﻿@using Tirajii.Data.Models
+@using Tirajii.Models.Trucker;
+@using Tirajii.Models.Company;
+@model IEnumerable<Truck>
+<h1 class="text-center">My Trucks:</h1>
+<hr />
+<br />
+<div class="text-center row">
+    @foreach (var item in Model)
+    {
+        <div class="card" style="width: 18rem;">
+            <img src="@item.Picture" class="card-img-top" alt="Truck Image">
+            <div class="card-body">
+                <h5 class="card-title mt-1">@item.Name</h5>
+                <p class="mb-0">Truck Colour: @item.Colour</p>
+                <p>Truck Class: @item.Class.Name</p>
+                <p>Registration Number: @item.RegistrationNumber</p>
+                @if (item.IsForSale)
+                {
+                    <p class="card-subtitle mb-2 text-muted">Is For Sale: <img src="~/pictures/check-solid.svg" width="10" height="10" /></p>
+                }
+                else
+                {
+                    <p class="card-subtitle mb-2 text-muted">Is For Sale: <img src="~/pictures/xmark-solid.svg" width="10" height="10" /></p>
+                    <form method="get">
+                        <button asp-route-id="@item.Id" asp-action="TruckOfferAdd" asp-controller="Company" class="btn btn-primary">Add an Offer</button>
+                    </form>
+                }
+            </div>
+        </div>
+    }
+</div>

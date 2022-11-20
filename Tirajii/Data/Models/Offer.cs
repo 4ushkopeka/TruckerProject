@@ -36,8 +36,8 @@ namespace Tirajii.Data.Models
         public Trucker? Trucker { get; set; }
 
         [Required]
-        [Range(0,10000)]
-        [Column(TypeName = "decimal(5,2)")]
+        [Range(0,20000)]
+        [Column(TypeName = "decimal(15,2)")]
         public decimal Payment { get; set; }
 
         [Required]

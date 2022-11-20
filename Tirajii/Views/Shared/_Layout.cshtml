@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using Tirajii.Data.Models
+<!DOCTYPE html>
+@inject SignInManager<User> SignInManager;
+@inject UserManager<User> UserManager;
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -12,19 +16,53 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="https://static-00.iconduck.com/assets.00/pickup-truck-emoji-512x240-7z15lue2.png" width="120" height="55" /></a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="https://static-00.iconduck.com/assets.00/pickup-truck-emoji-512x240-7z15lue2.png" width="100" height="50" /></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Offer" asp-action="All">Offers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="All">Companies</a>
-                        </li>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            var user = UserManager.FindByNameAsync(User.Identity.Name);
+                            if (!user.Result.IsTrucker && !user.Result.IsTruckerCompanyOwner && !user.Result.IsOfferCompanyOwner)
+                            {
+                            }
+                            else if (user.Result.IsTrucker)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Trucker" asp-action="Offers">Offers</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="All">Companies</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Trucker" asp-action="TruckOffersAll">Trucks</a>
+                                </li>
+                            }
+                            else
+                            {
+                                if (user.Result.IsTruckerCompanyOwner)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="TruckOfferMine">My Offers</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="TrucksMine">My Trucks</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="OfferMine">My Offers</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="All">All Companies</a>
+                                    </li>
+                                }
+                            }
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

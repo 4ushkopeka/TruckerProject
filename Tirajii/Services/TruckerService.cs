@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Globalization;
+using System.Security;
 using Tirajii.Data;
 using Tirajii.Data.Models;
+using Tirajii.Models;
 using Tirajii.Models.Trucker;
 using Tirajii.Services.Contracts;
 
@@ -22,6 +24,81 @@ namespace Tirajii.Services
             return await context.TruckingCategories.ToListAsync();
         }
 
+        public List<TruckClass> GetAllClasses()
+        {
+            return context.TruckClasses.ToList();
+        }
+
+        public AllOffersViewModel GetAllOffers(string category = null,
+            string searchTerm = null,
+            CollectionSorting sorting = CollectionSorting.DueDate,
+            int currentPage = 1)
+        {
+            var offers = this.context.Offers.Where(c => true);
+
+            if (!string.IsNullOrWhiteSpace(category))
+            {
+                offers = offers.Where(c => c.Category.Name == category);
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                offers = offers.Where(c =>
+                c.Name.ToLower().Contains(searchTerm.ToLower()) ||
+                c.Description.ToLower().Contains(searchTerm.ToLower()));
+            }
+
+            var totalOffers = offers.Count();
+
+            offers = sorting switch
+            {
+                CollectionSorting.DueDate => offers.OrderByDescending(c => c.DueDate),
+                CollectionSorting.Name => offers.OrderBy(c => c.Name),
+                _ => offers.OrderByDescending(c => c.Id)
+            };
+            return new AllOffersViewModel
+            {
+                TotalOffers = totalOffers,
+                CurrentPage = currentPage,
+                Offers = offers.Include(x => x.Company).Include(y => y.Company)
+            };
+        }
+
+        public AllTruckOffersViewModel GetAllTruckOffers(string category = null,
+            string searchTerm = null,
+            TruckOfferSorting sorting = TruckOfferSorting.Cost,
+            int currentPage = 1)
+        {
+            var offers = this.context.TruckOffers.Include(x => x.Truck).Include(x => x.Company).Where(c => true);
+
+            if (!string.IsNullOrWhiteSpace(category))
+            {
+                offers = offers.Where(c => c.Truck.Class.Name == category);
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                offers = offers.Where(c =>
+                c.Name.ToLower().Contains(searchTerm.ToLower()) ||
+                c.Description.ToLower().Contains(searchTerm.ToLower()));
+            }
+
+            var totalOffers = offers.Count();
+
+            offers = sorting switch
+            {
+                TruckOfferSorting.Cost => offers.OrderByDescending(c => c.Cost),
+                TruckOfferSorting.Name => offers.OrderBy(c => c.Name),
+                TruckOfferSorting.Company => offers.OrderBy(c => c.Company.Name),
+                _ => offers.OrderByDescending(c => c.Id)
+            };
+            return new AllTruckOffersViewModel
+            {
+                TotalOffers = totalOffers,
+                CurrentPage = currentPage,
+                Offers = offers
+            };
+        }
         public async Task RegisterTrucker(TruckerRegisterViewModel model, string userId)
         {
             var user = context.Users.First(x => x.Id == userId);

@@ -1,0 +1,23 @@
+﻿@using Tirajii.Data.Models
+@model IEnumerable<Company>
+<h1 class="text-center">All Companies</h1>
+<hr />
+<br />
+<div class="text-center row">
+    @foreach (var item in Model)
+    {
+        <div class="card" style="width: 18rem;">
+            <img src="@item.Picture" class="card-img-top" alt="Truck Image">
+            <div class="card-body">
+                <h5 class="card-title mt-1">@item.Name</h5>
+                <p class="mb-0">Rating: @item.Rating</p>
+                <p>Company Category: @item.Category.Name</p>
+                <p>Owner: @item.Owner.NormalizedUserName.ToLower()</p>
+                <form method="get">
+                    <button asp-route-id="@item.Id" asp-action="RateACompany" asp-controller="Trucker" class="btn btn-primary">Rate</button>
+                </form>
+
+            </div>
+        </div>
+    }
+</div>

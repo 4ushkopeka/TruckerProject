@@ -1,0 +1,23 @@
+﻿@using Tirajii.Data.Models
+@model IEnumerable<Offer>
+<div class="text-center row">
+    @foreach (var item in Model)
+    {
+        <div class="card" style="width: 18rem;">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <h6 class="card-subtitle">Reward: @item.Payment</h6>
+                    <p class="card-text">Description</p>
+                    <p class="card-text">@item.Description</p>
+                    <p class="card-text">Company: @item.Company.Name</p>
+                    <p class="card-text">Due Date: @item.DueDate.ToString("dd/MM/yyyy")</p>
+                    <p class="card-text">Category: @item.Category.Name</p>
+                    <form>
+                        <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="ClaimOffer" asp-controller="Trucker">Claim</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>
