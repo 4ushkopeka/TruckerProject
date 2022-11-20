@@ -7,6 +7,7 @@ using Tirajii.Data.Models;
 using Tirajii.Models.Company;
 using Tirajii.Models.Trucker;
 using Tirajii.Services.Contracts;
+using Tirajii.Infrastructure.Extensions;
 
 namespace Tirajii.Controllers
 {
@@ -40,8 +41,7 @@ namespace Tirajii.Controllers
             }
             try
             {
-                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (userId == null) throw new Exception("Invalid User!");
+                var userId = this.User.Id();
                 await companyService.RegisterCompany(model, userId);
                 notyf.Information("Welcome!");
                 return RedirectToAction("Index", "Home");
@@ -72,8 +72,7 @@ namespace Tirajii.Controllers
             }
             try
             {
-                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (userId == null) throw new Exception("Invalid User!");
+                var userId = this.User.Id();
                 await companyService.RegisterTruck(model, userId);
                 notyf.Success("Successfully registered a truck!");
                 return RedirectToAction("Index", "Home");
@@ -97,8 +96,7 @@ namespace Tirajii.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMyTrucks()
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) throw new Exception("Invalid User!");
+            var userId = this.User.Id();
             var trucks = await companyService.GetMyTrucks(userId);
             return View("CompanyTrucks",trucks);
         }
@@ -113,8 +111,7 @@ namespace Tirajii.Controllers
             }
             try
             {
-                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (userId == null) throw new Exception("Invalid User!");
+                var userId = this.User.Id();
                 await companyService.AddTruckOffer(model, userId);
                 notyf.Success("Successfully added an offer!");
                 return RedirectToAction("TruckOfferMine", "Company");
@@ -131,8 +128,7 @@ namespace Tirajii.Controllers
         {
             try
             {
-                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (userId == null) throw new Exception("Invalid User!");
+                var userId = this.User.Id();
                 var mine = await companyService.GetMyOffers(userId);
                 return View(mine);
             }
@@ -148,8 +144,7 @@ namespace Tirajii.Controllers
         {
             try
             {
-                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (userId == null) throw new Exception("Invalid User!");
+                var userId = this.User.Id();
                 var mine = companyService.GetMyTruckOffers(userId).Result;
                 return View(mine);
             }
@@ -181,8 +176,7 @@ namespace Tirajii.Controllers
         {
             try
             {
-                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (userId == null) throw new Exception("Invalid User!");
+                var userId = this.User.Id();
                 var trucks = await companyService.GetMyTrucks(userId);
                 return View(trucks);
             }
@@ -203,11 +197,7 @@ namespace Tirajii.Controllers
             }
             try
             {
-                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (userId is null)
-                {
-                    throw new ArgumentException("Invalid User");
-                }
+                var userId = this.User.Id();
                 await companyService.AddOffer(model, userId);
                 notyf.Success("Successfully added an offer!");
                 return RedirectToAction(nameof(OfferMine));

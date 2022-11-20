@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Tirajii.Data.Models;
+using Tirajii.Infrastructure.Extensions;
 using Tirajii.Models.Trucker;
 using Tirajii.Services;
 using Tirajii.Services.Contracts;
@@ -38,8 +39,7 @@ namespace Tirajii.Controllers
             }
             try
             {
-                var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (userId == null) throw new Exception("Invalid User!");
+                var userId = this.User.Id();
                 await truckerService.RegisterTrucker(model, userId);
                 return RedirectToAction("Index", "Home");
             }

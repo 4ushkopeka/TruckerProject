@@ -116,7 +116,7 @@ namespace Tirajii.Services
         public async Task<List<Truck>> GetMyTrucks(string userId)
         {
             var user = context.Users.Include(x => x.Company).First(x => x.Id == userId);
-            return await context.Trucks.Include(x => x.Class).Where(x => x.CompanyId == user.Company.Id && !x.IsForSale).ToListAsync();
+            return await context.Trucks.Include(x => x.Class).Where(x => x.CompanyId == user.Company.Id).ToListAsync();
         }
 
         public async Task<List<Offer>> GetMyOffers(string userId)

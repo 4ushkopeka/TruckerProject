@@ -32,62 +32,62 @@ namespace Tirajii.Data
                 .HasForeignKey<TruckOffer>(x => x.TruckId)
                 .OnDelete(DeleteBehavior.NoAction);
             });
-            builder
-            .Entity<TruckClass>()
-                 .HasData(new TruckClass()
-                 {
-                     Id = 1,
-                     Name = "BE"
-                 },
-                 new TruckClass()
-                 {
-                     Id = 2,
-                     Name = "C1"
-                 },
-                 new TruckClass()
-                 {
-                     Id = 3,
-                     Name = "C"
-                 },
-                 new TruckClass()
-                 {
-                     Id = 4,
-                     Name = "C1E"
-                 },
-                 new TruckClass()
-                 {
-                     Id = 5,
-                     Name = "CE"
-                 });
-            builder
-            .Entity<CompanyCategory>()
-                 .HasData(new CompanyCategory()
-                 {
-                     Id = 1,
-                     Name = "OfferProvider"
-                 },
-                 new CompanyCategory()
-                 {
-                     Id = 2,
-                     Name = "TruckProvider"
-                 });
-            builder
-            .Entity<TruckingCategory>()
-                 .HasData(new TruckingCategory()
-                 {
-                     Id = 1,
-                     Name = "Livestock"
-                 },
-                 new TruckingCategory()
-                 {
-                     Id = 2,
-                     Name = "Food"
-                 },
-                 new TruckingCategory()
-                 {
-                     Id = 3,
-                     Name = "Items"
-                 });
+            //builder
+            //.Entity<TruckClass>()
+            //     .HasData(new TruckClass()
+            //     {
+            //         Id = 1,
+            //         Name = "BE"
+            //     },
+            //     new TruckClass()
+            //     {
+            //         Id = 2,
+            //         Name = "C1"
+            //     },
+            //     new TruckClass()
+            //     {
+            //         Id = 3,
+            //         Name = "C"
+            //     },
+            //     new TruckClass()
+            //     {
+            //         Id = 4,
+            //         Name = "C1E"
+            //     },
+            //     new TruckClass()
+            //     {
+            //         Id = 5,
+            //         Name = "CE"
+            //     });
+            //builder
+            //.Entity<CompanyCategory>()
+            //     .HasData(new CompanyCategory()
+            //     {
+            //         Id = 1,
+            //         Name = "OfferProvider"
+            //     },
+            //     new CompanyCategory()
+            //     {
+            //         Id = 2,
+            //         Name = "TruckProvider"
+            //     });
+            //builder
+            //.Entity<TruckingCategory>()
+            //     .HasData(new TruckingCategory()
+            //     {
+            //         Id = 1,
+            //         Name = "Livestock"
+            //     },
+            //     new TruckingCategory()
+            //     {
+            //         Id = 2,
+            //         Name = "Food"
+            //     },
+            //     new TruckingCategory()
+            //     {
+            //         Id = 3,
+            //         Name = "Items"
+            //     });
             base.OnModelCreating(builder);
         }
     }

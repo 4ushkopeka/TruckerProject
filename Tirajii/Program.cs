@@ -6,6 +6,7 @@ using Tirajii.Services;
 using Tirajii.Services.Contracts;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using AspNetCoreHero.ToastNotification;
+using Tirajii.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +41,7 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.PrepareDatabase();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
