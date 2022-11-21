@@ -140,5 +140,20 @@ namespace Tirajii.Services
             var user = context.Users.Include(x => x.Company).First(x => x.Id == userId);
             return await context.Trucks.Include(x => x.Class).Where(x => x.CompanyId == user.Company.Id && !x.IsForSale).ToListAsync();
         }
+
+        public async Task<RatingViewModel> GetRating(string userId)
+        {
+            var user = await context.Users.Include(x => x.Company).FirstAsync(x => x.Id == userId);
+            var model = new RatingViewModel()
+            {
+                AverageRating = user.Company.Rating,
+                Count1 = context.CompanyRatings.Where(x => x.CompanyId == user.Company.Id && x.Rating==1).Count(),
+                Count2 = context.CompanyRatings.Where(x => x.CompanyId == user.Company.Id && x.Rating==2).Count(),
+                Count3 = context.CompanyRatings.Where(x => x.CompanyId == user.Company.Id && x.Rating==3).Count(),
+                Count4 = context.CompanyRatings.Where(x => x.CompanyId == user.Company.Id && x.Rating==4).Count(),
+                Count5 = context.CompanyRatings.Where(x => x.CompanyId == user.Company.Id && x.Rating==5).Count()
+            };
+            return model;
+        }
     }
 }

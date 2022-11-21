@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow.CopyAnalysis;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Globalization;
 using System.Security;
@@ -19,7 +20,7 @@ namespace Tirajii.Services
             this.context = context;
         }
 
-        public async Task<List<TruckingCategory>> GetAllCategories()
+        public async Task<List<TruckingCategory>> GetAllTruckingCategories()
         {
             return await context.TruckingCategories.ToListAsync();
         }
@@ -100,10 +101,6 @@ namespace Tirajii.Services
             };
         }
 
-        public async Task<List<Company>> GetAllCompanies()
-        {
-            return await context.Companies.Include(x => x.Category).Include(x => x.Owner).ToListAsync();
-        }
         public async Task RateACompany(string userId, int Id, int rating)
         {
             var company = context.Companies.First(x => x.Id == Id);
@@ -112,6 +109,7 @@ namespace Tirajii.Services
             {
                 throw new InvalidOperationException("Cannot rate an already rated company!");
             }
+            company.Rating = ((decimal)context.CompanyRatings.Where(x => x.CompanyId == company.Id).Sum(x => x.Rating) + rating) / (context.CompanyRatings.Where(x => x.CompanyId == company.Id).Count()+1);
             await context.CompanyRatings.AddAsync(new CompanyRatings
             {
                 CompanyId = company.Id,
@@ -124,19 +122,10 @@ namespace Tirajii.Services
         public async Task RegisterTrucker(TruckerRegisterViewModel model, string userId)
         {
             var user = context.Users.First(x => x.Id == userId);
-            bool bday = DateTime.TryParseExact(model.BirthDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime BDayval);
-            if (!bday)
-            {
-                throw new ArgumentException("Invalid date format!");
-            }
             Trucker trucker = new Trucker()
             {
                 Name = model.FullName,
-                Email = model.Email,
                 User = user,
-                PhoneNumber = model.PhoneNumber,
-                BirthDate = BDayval,
-                ProfilePicture = model.ProfilePicture,
                 CategoryId = model.CategoryId
             };
             user.IsTrucker = true;
@@ -149,6 +138,42 @@ namespace Tirajii.Services
         {
             var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
             return user;
+        }
+
+        public AllCompaniesViewModel GetAllCompanies(string category = null, string searchTerm = null, CompanySorting sorting = CompanySorting.Rating, int currentPage = 1)
+        {
+            var companies = this.context.Companies.Include(x => x.Owner).Where(c => true);
+
+            if (!string.IsNullOrWhiteSpace(category))
+            {
+                companies = companies.Where(c => c.Category.Name == category);
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                companies = companies.Where(c =>
+                c.Name.ToLower().Contains(searchTerm.ToLower()));
+            }
+
+            var totalCompanies = companies.Count();
+
+            companies = sorting switch
+            {
+                CompanySorting.Rating => companies.OrderByDescending(c => c.Rating),
+                CompanySorting.Name => companies.OrderBy(c => c.Name),
+                _ => companies.OrderByDescending(c => c.Id)
+            };
+            return new AllCompaniesViewModel
+            {
+                TotalCompanies = totalCompanies,
+                CurrentPage = currentPage,
+                Companies = companies
+            };
+        }
+
+        public async Task<List<CompanyCategory>> GetAllCompanyCategories()
+        {
+            return await context.CompanyCategories.ToListAsync();
         }
     }
 }

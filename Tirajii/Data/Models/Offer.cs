@@ -44,6 +44,9 @@ namespace Tirajii.Data.Models
         public bool IsTaken { get; set; }
 
         [Required]
+        public int ExpAmount => new Random().Next(2,6);
+
+        [Required]
         public bool IsCompleted { get; set; }
 
         public bool IsApproved { get; set; }

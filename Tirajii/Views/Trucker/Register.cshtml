@@ -19,26 +19,6 @@
                     <textarea asp-for="Description" rows="4" class="form-control" placeholder="Describe yourself!"></textarea>
                     <span asp-validation-for="Description" class="small text-danger"> </span>
                 </div>
-                <div class="mb-3">
-                    <label asp-for="Email"></label>
-                    <textarea asp-for="Email" class="form-control" placeholder="Ex: business@gmail.com"></textarea>
-                    <span asp-validation-for="Email" class="small text-danger"> </span>
-                </div>
-                <div class="mb-3">
-                    <label asp-for="ProfilePicture"></label>
-                    <input asp-for="ProfilePicture" class="form-control" placeholder="Your URL here...">
-                    <span asp-validation-for="ProfilePicture" class="small text-danger"> </span>
-                </div>
-                <div class="mb-3">
-                    <label asp-for="PhoneNumber"></label>
-                    <input asp-for="PhoneNumber" class="form-control" placeholder="Ex: 0888888888">
-                    <span asp-validation-for="PhoneNumber" class="small text-danger"> </span>
-                </div>
-                <div class="mb-3">
-                    <label asp-for="BirthDate">Birth Date</label>
-                    <input type="date" asp-for="BirthDate" class="form-control" placeholder="Ex: dd/mm/yyyy">
-                    <span asp-validation-for="BirthDate" class="small text-danger"> </span>
-                </div>
                 <div class="form-group">
                     <label asp-for="CategoryId">Your category:</label>
                     <select asp-for="CategoryId" class="form-select">

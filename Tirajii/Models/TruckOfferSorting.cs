@@ -2,8 +2,8 @@
 {
     public enum TruckOfferSorting
     {
-        Cost = 1,
-        Name = 2,
-        Company = 3
+        Cost = 0,
+        Name = 1,
+        Company = 2
     }
 }

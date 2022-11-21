@@ -8,7 +8,9 @@ namespace Tirajii.Services.Contracts
     {
         Task RegisterTrucker(TruckerRegisterViewModel model, string userId);
 
-        Task<List<TruckingCategory>> GetAllCategories();
+        Task<List<TruckingCategory>> GetAllTruckingCategories();
+
+        Task<List<CompanyCategory>> GetAllCompanyCategories();
 
         List<TruckClass> GetAllClasses();
 
@@ -24,7 +26,10 @@ namespace Tirajii.Services.Contracts
             CollectionSorting sorting = CollectionSorting.DueDate,
             int currentPage = 1);
 
-        Task<List<Company>> GetAllCompanies();
+        AllCompaniesViewModel GetAllCompanies(string category = null,
+            string searchTerm = null,
+            CompanySorting sorting = CompanySorting.Rating,
+            int currentPage = 1);
 
         Task<User> GetUserWithTrucker(string userId);
     }

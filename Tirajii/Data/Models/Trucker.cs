@@ -10,20 +10,6 @@ namespace Tirajii.Data.Models
 
         [Required]
         public string Name { get; set; }
-        [Required]
-        public DateTime BirthDate { get; set; }
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(25, MinimumLength = 6)]
-        [Phone]
-        public string PhoneNumber { get; set; }
-
-        [Url]
-        public string? ProfilePicture { get; set; }
 
         [ForeignKey(nameof(User))]
         [Required]
@@ -36,6 +22,10 @@ namespace Tirajii.Data.Models
 
         public Truck? Truck { get; set; }
 
+        public int Experience { get; set; }
+
+        public int Level { get; set; }
+
         public ICollection<CompanyRatings> CompaniesRated { get; set; } = new List<CompanyRatings>();
 
         [ForeignKey(nameof(Category))]
@@ -45,8 +35,5 @@ namespace Tirajii.Data.Models
         public TruckingCategory Category { get; set; }
 
         public ICollection<Offer> Offers { get; set; } = new List<Offer>();
-
-        [NotMapped]
-        public ICollection<Offer> OffersCompleted { get; set; } = new List<Offer>();
     }
 }

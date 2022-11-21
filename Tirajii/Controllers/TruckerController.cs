@@ -28,7 +28,7 @@ namespace Tirajii.Controllers
         {
             var model = new TruckerRegisterViewModel
             {
-                TruckingCategories =  await truckerService.GetAllCategories()
+                TruckingCategories =  await truckerService.GetAllTruckingCategories()
             };
             return View(model);
         }
@@ -59,7 +59,7 @@ namespace Tirajii.Controllers
                 model.Sorting,
                 model.CurrentPage);
 
-            var categories = await truckerService.GetAllCategories();
+            var categories = await truckerService.GetAllTruckingCategories();
 
             model.Offers = result.Offers;
             model.Categories = categories;
@@ -82,13 +82,20 @@ namespace Tirajii.Controllers
             return View(model);
         }
         [HttpGet]
-        public async Task<IActionResult> AllCompanies()
+        public async Task<IActionResult> AllCompanies(AllCompaniesViewModel model)
         {
-            var comps = await truckerService.GetAllCompanies();
-            string userId = User.Id();
-            var user = await truckerService.GetUserWithTrucker(userId);
-            ViewBag.User = user;
-            return View(comps);
+            var result = truckerService.GetAllCompanies(model.Category,
+                model.SearchTerm,
+                model.Sorting,
+                model.CurrentPage);
+
+            var categories = await truckerService.GetAllCompanyCategories();
+
+            model.Companies = result.Companies;
+            model.Categories = categories;
+            model.TotalCompanies = result.TotalCompanies;
+            ViewBag.User = await truckerService.GetUserWithTrucker(User.Id());
+            return View(model);
         }
         [HttpPost]
         public async Task<IActionResult> RateACompany(int id, int rating)

@@ -164,6 +164,13 @@ namespace Tirajii.Controllers
             };
             return View(model);
         }
+        [HttpGet]
+        public async Task<IActionResult> Rating()
+        {
+            var model = await companyService.GetRating(User.Id());
+
+            return View(model);
+        }
         
         [HttpGet]
         public async Task<IActionResult> TrucksMine()

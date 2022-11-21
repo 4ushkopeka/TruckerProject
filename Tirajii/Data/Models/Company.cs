@@ -15,7 +15,7 @@ namespace Tirajii.Data.Models
         [Required]
         [Range(0, 5)]
         [Column(TypeName = "decimal(5,2)")]
-        public decimal Rating => CompanyRatings.Any() ? (decimal)CompanyRatings.Average(x => x.Rating) : 0;
+        public decimal Rating { get; set; }
 
         [ForeignKey(nameof(Category))]
         [Required]
