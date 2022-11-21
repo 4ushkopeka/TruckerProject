@@ -33,11 +33,15 @@ namespace Tirajii.Data.Models
 
         [ForeignKey(nameof(Truck))]
         public int? TruckId { get; set; }
+
         public Truck? Truck { get; set; }
+
+        public ICollection<CompanyRatings> CompaniesRated { get; set; } = new List<CompanyRatings>();
 
         [ForeignKey(nameof(Category))]
         [Required]
         public int CategoryId { get; set; }
+
         public TruckingCategory Category { get; set; }
 
         public ICollection<Offer> Offers { get; set; } = new List<Offer>();

@@ -63,8 +63,7 @@ namespace Tirajii.Services
                 Name = model.Name,
                 Owner = user,
                 Picture = model.Picture,
-                CategoryId = model.CategoryId,
-                Rating = 0
+                CategoryId = model.CategoryId
             };
             if (model.CategoryId==1) user.IsOfferCompanyOwner = true;
             else user.IsTruckerCompanyOwner = true;
@@ -134,11 +133,6 @@ namespace Tirajii.Services
         public async Task<Truck> GetTruckById(int truckId)
         {
             return await context.Trucks.FirstAsync(x => x.Id == truckId);
-        }
-
-        public async Task<List<Company>> GetAllCompanies()
-        {
-            return await context.Companies.Include(x => x.Category).Include(x => x.Owner).ToListAsync();
         }
 
         public async Task<List<Truck>> GetMyTrucksForOffer(string userId)

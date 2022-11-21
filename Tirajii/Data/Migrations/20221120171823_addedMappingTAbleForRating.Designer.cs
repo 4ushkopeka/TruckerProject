@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tirajii.Data;
 
@@ -11,9 +12,10 @@ using Tirajii.Data;
 namespace Tirajii.Data.Migrations
 {
     [DbContext(typeof(TruckersDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221120171823_addedMappingTAbleForRating")]
+    partial class addedMappingTAbleForRating
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -182,8 +184,11 @@ namespace Tirajii.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Rates")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Rating")
-                        .HasColumnType("decimal(5,2)");
+                        .HasColumnType("decimal(2,2)");
 
                     b.HasKey("Id");
 
@@ -212,7 +217,7 @@ namespace Tirajii.Data.Migrations
                     b.ToTable("CompanyCategories");
                 });
 
-            modelBuilder.Entity("Tirajii.Data.Models.CompanyRatings", b =>
+            modelBuilder.Entity("Tirajii.Data.Models.CompanyRaters", b =>
                 {
                     b.Property<int>("RaterId")
                         .HasColumnType("int");
@@ -220,14 +225,11 @@ namespace Tirajii.Data.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
                     b.HasKey("RaterId", "CompanyId");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CompanyRatings");
+                    b.ToTable("CompanyRaters");
                 });
 
             modelBuilder.Entity("Tirajii.Data.Models.Offer", b =>
@@ -611,10 +613,10 @@ namespace Tirajii.Data.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("Tirajii.Data.Models.CompanyRatings", b =>
+            modelBuilder.Entity("Tirajii.Data.Models.CompanyRaters", b =>
                 {
                     b.HasOne("Tirajii.Data.Models.Company", "Company")
-                        .WithMany("CompanyRatings")
+                        .WithMany("Raters")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -726,9 +728,9 @@ namespace Tirajii.Data.Migrations
 
             modelBuilder.Entity("Tirajii.Data.Models.Company", b =>
                 {
-                    b.Navigation("CompanyRatings");
-
                     b.Navigation("Offers");
+
+                    b.Navigation("Raters");
                 });
 
             modelBuilder.Entity("Tirajii.Data.Models.CompanyCategory", b =>

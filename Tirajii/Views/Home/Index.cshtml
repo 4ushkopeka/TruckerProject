@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Tirajii.Data.Models
+@using Tirajii.Infrastructure.Extensions
 @inject SignInManager<User> SignInManager;
 @inject UserManager<User> UserManager;
 @{
@@ -55,7 +56,7 @@
 <br />
 @if (SignInManager.IsSignedIn(User))
 {
-    var user = UserManager.FindByNameAsync(User.Identity.Name);
+    var user = UserManager.FindByIdAsync(User.Id());
     if (!user.Result.IsTrucker && !user.Result.IsTruckerCompanyOwner && !user.Result.IsOfferCompanyOwner)
     {
         <h4 class="text-center">What are you waiting for?</h4>

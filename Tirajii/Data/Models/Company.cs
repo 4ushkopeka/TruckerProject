@@ -13,15 +13,17 @@ namespace Tirajii.Data.Models
         public string Name { get; set; }
 
         [Required]
-        [Range(0, 10)]
-        [Column(TypeName = "decimal(2,2)")]
-        public decimal Rating { get; set; }
+        [Range(0, 5)]
+        [Column(TypeName = "decimal(5,2)")]
+        public decimal Rating => CompanyRatings.Any() ? (decimal)CompanyRatings.Average(x => x.Rating) : 0;
 
         [ForeignKey(nameof(Category))]
         [Required]
         public int CategoryId { get; set; }
 
         public CompanyCategory Category { get; set; }
+
+        public ICollection<CompanyRatings> CompanyRatings { get; set; } = new List<CompanyRatings>();
 
         [Required]
         [ForeignKey(nameof(Owner))]

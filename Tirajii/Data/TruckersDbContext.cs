@@ -16,6 +16,7 @@ namespace Tirajii.Data
         {
         }
         public DbSet<CompanyCategory> CompanyCategories { get; set; }
+        public DbSet<CompanyRatings> CompanyRatings { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<TruckOffer> TruckOffers { get; set; }
@@ -31,6 +32,21 @@ namespace Tirajii.Data
                 .WithOne(x => x.TruckOffer)
                 .HasForeignKey<TruckOffer>(x => x.TruckId)
                 .OnDelete(DeleteBehavior.NoAction);
+            });
+            builder.Entity<CompanyRatings>(x =>
+            {
+                x.HasKey(x => new { x.RaterId, x.CompanyId });
+
+                x.HasOne(x => x.Rater)
+                .WithMany(x => x.CompaniesRated)
+                .HasForeignKey(x => x.RaterId)
+                .OnDelete(DeleteBehavior.Restrict);
+                
+                x.HasOne(x => x.Company)
+                .WithMany(x => x.CompanyRatings)
+                .HasForeignKey(x => x.CompanyId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             });
             //builder
             //.Entity<TruckClass>()

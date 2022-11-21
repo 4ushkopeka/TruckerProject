@@ -166,12 +166,6 @@ namespace Tirajii.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> All()
-        {
-            var comps = await companyService.GetAllCompanies();
-            return View(comps);
-        }
-        [HttpGet]
         public async Task<IActionResult> TrucksMine()
         {
             try

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AspNetCore;
+using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -14,12 +16,12 @@ namespace Tirajii.Controllers
     [Authorize]
     public class TruckerController : Controller
     {
-        private readonly UserManager<User> userManager;
         private readonly ITruckerService truckerService;
-        public TruckerController(ITruckerService _trService, UserManager<User> _userManager)
+        private readonly INotyfService notyf;
+        public TruckerController(ITruckerService _trService, INotyfService _notyf)
         {
             truckerService = _trService;
-            userManager = _userManager;
+            notyf = _notyf;
         }
         [HttpGet]
         public async Task<IActionResult> Register()
@@ -78,6 +80,40 @@ namespace Tirajii.Controllers
             model.Categories = categories;
             model.TotalOffers = result.TotalOffers;
             return View(model);
+        }
+        [HttpGet]
+        public async Task<IActionResult> AllCompanies()
+        {
+            var comps = await truckerService.GetAllCompanies();
+            string userId = User.Id();
+            var user = await truckerService.GetUserWithTrucker(userId);
+            ViewBag.User = user;
+            return View(comps);
+        }
+        [HttpPost]
+        public async Task<IActionResult> RateACompany(int id, int rating)
+        {
+            
+            try
+            {
+                if (rating == 0)
+                {
+                    throw new InvalidOperationException("Cannot submit a rating of 0!");
+                }
+                else
+                {
+                    var userId = User.Id();
+                    await truckerService.RateACompany(userId, id, rating);
+                    notyf.Success("Thank you for rating!");
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            catch (Exception ex)
+            {
+                notyf.Error(ex.Message);
+                return RedirectToAction("AllCompanies", "Trucker");
+            }
+            
         }
         public IActionResult OffersMine()
         {

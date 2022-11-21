@@ -28,7 +28,5 @@ namespace Tirajii.Services.Contracts
         Task AddOffer(OfferAddViewModel model, string UserId);
 
         Task<List<TruckingCategory>> GetAllOfferCategories();
-        
-        Task<List<Company>> GetAllCompanies();
     }
 }

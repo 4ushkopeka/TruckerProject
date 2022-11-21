@@ -99,6 +99,28 @@ namespace Tirajii.Services
                 Offers = offers
             };
         }
+
+        public async Task<List<Company>> GetAllCompanies()
+        {
+            return await context.Companies.Include(x => x.Category).Include(x => x.Owner).ToListAsync();
+        }
+        public async Task RateACompany(string userId, int Id, int rating)
+        {
+            var company = context.Companies.First(x => x.Id == Id);
+            var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
+            if (await context.CompanyRatings.ContainsAsync(new CompanyRatings { RaterId = user.Trucker.Id, CompanyId = company.Id}))
+            {
+                throw new InvalidOperationException("Cannot rate an already rated company!");
+            }
+            await context.CompanyRatings.AddAsync(new CompanyRatings
+            {
+                CompanyId = company.Id,
+                RaterId = user.Trucker.Id,
+                Rating = rating
+            });
+            await context.SaveChangesAsync();
+        }
+
         public async Task RegisterTrucker(TruckerRegisterViewModel model, string userId)
         {
             var user = context.Users.First(x => x.Id == userId);
@@ -121,6 +143,12 @@ namespace Tirajii.Services
             user.Trucker = trucker;
             await context.Truckers.AddAsync(trucker);
             await context.SaveChangesAsync();
+        }
+
+        public async Task<User> GetUserWithTrucker(string userId)
+        {
+            var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
+            return user;
         }
     }
 }

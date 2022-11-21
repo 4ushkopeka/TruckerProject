@@ -1,0 +1,76 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Tirajii.Data.Models
+@using Tirajii.Infrastructure.Extensions
+@model IEnumerable<Company>
+<style>
+    .star-rating {
+        border: none;
+        margin:auto;
+        display: flex;
+        flex-direction: row-reverse;
+        font-size: 1.5em;
+        justify-content: space-evenly;
+        padding: 0 .2em;
+        text-align: center;
+        width: 5em;
+        
+    }
+
+        .star-rating input {
+            display: none;
+        }
+
+        .star-rating label {
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .star-rating :checked ~ label {
+            color: #f90;
+        }
+
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #fc0;
+        }
+</style>
+<h1 class="text-center">All Companies</h1>
+<hr />
+<br />
+<div class="text-center row">
+    @foreach (var item in Model)
+    {
+        <div class="card" style="width: 18rem;">
+            <img src="@item.Picture" class="card-img-top" alt="Truck Image">
+            <div class="card-body">
+                <h5 class="card-title mt-1">@item.Name</h5>
+                <p class="mb-0">Rating: @item.Rating</p>
+                <p>Company Category: @item.Category.Name</p>
+                <p>Owner: @item.Owner.NormalizedUserName.ToLower()</p>
+                @{
+                    var user = ViewBag.User;}
+                    @if (user.IsTrucker)
+                    {
+                    
+                            <h5 class="card-subtitle mt-1">Rate:</h5>
+                            <form method="post">
+                                <div class="star-rating">
+                                    <input type="radio" asp-for="@item.Rating" id="5-stars @item.Name[2]" name="rating" value="5" />
+                                    <label for="5-stars @item.Name[2]" class="star">&#9733;</label>
+                                    <input type="radio" asp-for="@item.Rating" id="4-stars @item.Name[2]" name="rating" value="4" />
+                                    <label for="4-stars @item.Name[2]" class="star">&#9733;</label>
+                                    <input type="radio" asp-for="@item.Rating" id="3-stars @item.Name[2]" name="rating" value="3" />
+                                    <label for="3-stars @item.Name[2]" class="star">&#9733;</label>
+                                    <input type="radio" asp-for="@item.Rating" id="2-stars @item.Name[2]" name="rating" value="2" />
+                                    <label for="2-stars @item.Name[2]" class="star">&#9733;</label>
+                                    <input type="radio" asp-for="@item.Rating" id="1-star @item.Name[2]" name="rating" value="1" />
+                                    <label for="1-star @item.Name[2]" class="star">&#9733;</label>
+                                </div>
+                            <button type="submit" asp-route-id="@item.Id" asp-route-rating="@item.Rating" asp-route-companyId="@item.Id" asp-action="RateACompany" asp-controller="Trucker" class="btn btn-primary">Submit</button>
+                            </form>
+                        
+                    }
+            </div>
+        </div>
+    }
+</div>

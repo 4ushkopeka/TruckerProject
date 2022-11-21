@@ -12,6 +12,8 @@ namespace Tirajii.Services.Contracts
 
         List<TruckClass> GetAllClasses();
 
+        Task RateACompany(string userId, int Id, int rating);
+
         AllTruckOffersViewModel GetAllTruckOffers(string category = null,
             string searchTerm = null,
             TruckOfferSorting sorting = TruckOfferSorting.Cost,
@@ -21,5 +23,9 @@ namespace Tirajii.Services.Contracts
             string searchTerm = null,
             CollectionSorting sorting = CollectionSorting.DueDate,
             int currentPage = 1);
+
+        Task<List<Company>> GetAllCompanies();
+
+        Task<User> GetUserWithTrucker(string userId);
     }
 }
