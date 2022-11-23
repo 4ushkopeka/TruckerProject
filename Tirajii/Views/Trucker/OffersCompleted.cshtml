@@ -1,1 +1,20 @@
-﻿
+﻿@using Tirajii.Data.Models
+@model IEnumerable<Offer>
+<div class="text-center row">
+    <h2>Offers completed:</h2>
+    <hr />
+    @foreach (var item in Model)
+    {
+        <div class="card" style="width: 18rem;">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <h6 class="card-subtitle">Reward: @item.Payment</h6>
+                    <p class="card-text">Company: @item.Company.Name</p>
+                    <p class="card-text">Category: @item.Category.Name</p>
+                    <img src="~/pictures/circle-check-solid.svg" height="30" width="30">
+                </div>
+            </div>
+        </div>
+    }
+</div>

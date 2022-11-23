@@ -35,7 +35,7 @@ namespace Tirajii.Services
             CollectionSorting sorting = CollectionSorting.DueDate,
             int currentPage = 1)
         {
-            var offers = this.context.Offers.Where(c => true);
+            var offers = this.context.Offers.Where(c => !c.IsTaken);
 
             if (!string.IsNullOrWhiteSpace(category))
             {
@@ -61,7 +61,7 @@ namespace Tirajii.Services
             {
                 TotalOffers = totalOffers,
                 CurrentPage = currentPage,
-                Offers = offers.Include(x => x.Company).Include(y => y.Company)
+                Offers = offers.Include(x => x.Company)
             };
         }
 
@@ -126,7 +126,12 @@ namespace Tirajii.Services
             {
                 Name = model.FullName,
                 User = user,
-                CategoryId = model.CategoryId
+                CategoryId = model.CategoryId,
+                Email = model.Email,
+                ProfilePicture = model.Picture,
+                PhoneNumber = model.PhoneNumber,
+                Experience = 0,
+                Level = 0
             };
             user.IsTrucker = true;
             user.Trucker = trucker;
@@ -174,6 +179,28 @@ namespace Tirajii.Services
         public async Task<List<CompanyCategory>> GetAllCompanyCategories()
         {
             return await context.CompanyCategories.ToListAsync();
+        }
+
+        public async Task ClaimAnOffer(string userId, int offerId)
+        {
+            var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
+            var offer = await  context.Offers.FirstAsync(x => x.Id == offerId);
+            user.Trucker.Offers.Add(offer);
+            offer.IsTaken = true;
+            offer.Trucker = user.Trucker;
+            
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<List<Offer>> GetMyOffers(string userId)
+        {
+            var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
+            return await context.Offers.Include(x => x.Company).Include(x => x.Category).Where(x => x.TruckerId == user.Trucker.Id).ToListAsync();
+        }
+        public async Task<List<Offer>> GetMyCompletedOffers(string userId)
+        {
+            var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
+            return await context.Offers.Include(x => x.Company).Include(x => x.Category).Where(x => x.TruckerId == user.Trucker.Id && x.IsCompleted).ToListAsync();
         }
     }
 }

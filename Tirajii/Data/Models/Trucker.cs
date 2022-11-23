@@ -15,7 +15,19 @@ namespace Tirajii.Data.Models
         [Required]
         public string UserId { get; set; }
 
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+        
+        [Required]
+        [StringLength(20, MinimumLength = 6)]
+        [Phone]
+        public string PhoneNumber { get; set; }
+
         public User User { get; set; }
+
+        [Url]
+        public string? ProfilePicture { get; set; }
 
         [ForeignKey(nameof(Truck))]
         public int? TruckId { get; set; }

@@ -32,5 +32,11 @@ namespace Tirajii.Services.Contracts
             int currentPage = 1);
 
         Task<User> GetUserWithTrucker(string userId);
+        
+        Task<List<Offer>> GetMyOffers(string userId);
+
+        Task<List<Offer>> GetMyCompletedOffers(string userId);
+        
+        Task ClaimAnOffer(string userId, int offerId);
     }
 }

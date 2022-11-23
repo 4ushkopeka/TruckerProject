@@ -14,6 +14,18 @@ namespace Tirajii.Models.Trucker
         public string Description { get; set; }
 
         [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
+        [Required]
+        [Phone]
+        [StringLength(20, MinimumLength = 6)]
+        public string PhoneNumber { get; set; }
+
+        [Url]
+        public string? Picture { get; set; }
+
+        [Required]
         public int CategoryId { get; set; }
 
         [Required]

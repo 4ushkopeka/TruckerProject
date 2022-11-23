@@ -48,6 +48,7 @@ namespace Tirajii.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
+                notyf.Error(ex.Message);
                 return View(model);
             }
         }
@@ -64,6 +65,7 @@ namespace Tirajii.Controllers
             model.Offers = result.Offers;
             model.Categories = categories;
             model.TotalOffers = result.TotalOffers;
+            ViewBag.User = await truckerService.GetUserWithTrucker(User.Id());
             return View(model);
         }
         [HttpGet]
@@ -98,6 +100,24 @@ namespace Tirajii.Controllers
             return View(model);
         }
         [HttpPost]
+        public async Task<IActionResult> ClaimOffer(int offerId)
+        {
+            try
+            {
+                var userId = User.Id();
+                await truckerService.ClaimAnOffer(userId, offerId);
+                notyf.Success("Succesfully claimed an offer!");
+                return RedirectToAction("OffersMine", "Trucker");
+            }
+            catch (Exception ex)
+            {
+                notyf.Error(ex.Message);
+                return RedirectToAction("Offers", "Trucker");
+            }
+           
+        }
+        
+        [HttpPost]
         public async Task<IActionResult> RateACompany(int id, int rating)
         {
             
@@ -122,11 +142,23 @@ namespace Tirajii.Controllers
             }
             
         }
-        public IActionResult OffersMine()
+        [HttpGet]
+        public async Task<IActionResult> OffersMine()
         {
-            return View();
+            var userId = User.Id();
+            var offers = await truckerService.GetMyOffers(userId);
+            return View(offers);
         }
-        public IActionResult OffersCompleted()
+        [HttpGet]
+        public async Task<IActionResult> OffersCompleted()
+        {
+            var userId = User.Id();
+            var offers = await truckerService.GetMyCompletedOffers(userId);
+            return View(offers);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> StartOffer(int offerId)
         {
             return View();
         }

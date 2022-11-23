@@ -57,7 +57,7 @@ namespace Tirajii.Services
 
         public async Task RegisterCompany(CompanyRegisterViewModel model, string userId)
         {
-            var user = context.Users.First(x => x.Id == userId);
+            var user = await context.Users.FirstAsync(x => x.Id == userId);
             Company company = new Company()
             {
                 Name = model.Name,
@@ -65,7 +65,7 @@ namespace Tirajii.Services
                 Picture = model.Picture,
                 CategoryId = model.CategoryId
             };
-            if (model.CategoryId==1) user.IsOfferCompanyOwner = true;
+            if (model.CategoryId == await context.CompanyCategories.Where(x => x.Id == model.CategoryId).Select(x => x.Id).FirstAsync()) user.IsOfferCompanyOwner = true;
             else user.IsTruckerCompanyOwner = true;
             user.Company = company;
             await context.Companies.AddAsync(company);

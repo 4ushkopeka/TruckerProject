@@ -32,7 +32,10 @@
                 {
                     <form method="get">
                          <li><a class="dropdown-item fw-bold" asp-area="" asp-action="Configure" asp-controller="Trucker">Configure truck</a></li>
-                    </form>
+                    <li><a class="dropdown-item fw-bold" asp-area="" asp-action="OffersMine" asp-controller="Trucker">My Offers</a>
+
+                    </li>
+                     </form>
                 }
                 else if (user.IsOfferCompanyOwner)
                 {

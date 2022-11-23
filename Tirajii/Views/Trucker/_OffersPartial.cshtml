@@ -13,9 +13,38 @@
                     <p class="card-text">Company: @item.Company.Name</p>
                     <p class="card-text">Due Date: @item.DueDate.ToString("dd/MM/yyyy")</p>
                     <p class="card-text">Category: @item.Category.Name</p>
-                    <form>
-                        <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="ClaimOffer" asp-controller="Trucker">Claim</button>
-                    </form>
+                    @if (ViewBag.User.Trucker.CategoryId != item.CategoryId)
+                    {
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Claim
+                        </button>
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Attention!</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        This offer is outside of your field of specialization, you may fail miserably. Take it anyway?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <form method="post">
+                                            <button type="submit" class="btn btn-primary" asp-route-offerId="@item.Id" asp-action="ClaimOffer" asp-controller="Trucker">Claim</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <form method="post">
+                            <button type="submit" class="btn btn-outline-primary" asp-area="" asp-route-offerId="@item.Id" asp-action="ClaimOffer" asp-controller="Trucker">Claim</button>
+                        </form>
+                    }
+                    
                 </div>
             </div>
         </div>
