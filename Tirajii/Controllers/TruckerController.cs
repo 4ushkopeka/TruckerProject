@@ -43,6 +43,7 @@ namespace Tirajii.Controllers
             {
                 var userId = this.User.Id();
                 await truckerService.RegisterTrucker(model, userId);
+                notyf.Information("Welcome");
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
@@ -111,6 +112,7 @@ namespace Tirajii.Controllers
             }
             catch (Exception ex)
             {
+                ModelState.AddModelError("", ex.Message);
                 notyf.Error(ex.Message);
                 return RedirectToAction("Offers", "Trucker");
             }
@@ -137,6 +139,7 @@ namespace Tirajii.Controllers
             }
             catch (Exception ex)
             {
+                ModelState.AddModelError("", ex.Message);
                 notyf.Error(ex.Message);
                 return RedirectToAction("AllCompanies", "Trucker");
             }
@@ -162,18 +165,18 @@ namespace Tirajii.Controllers
         public async Task<IActionResult> CompleteOffer(int offerId)
         {
             var userId = User.Id();
-            var expgained = await truckerService.OfferSucceed(userId, offerId);
-            if (expgained==1) notyf.Success("Nice! You levelled up, keep it up!");
-            else notyf.Success($"Nice! You were rewarded {expgained} XP, keep it up!");
+            var result = await truckerService.OfferSucceed(userId, offerId);
+            if (result.WasLeveledUp) notyf.Success($"Nice! You levelled up and now are on level {result.Level}!");
+            else notyf.Success($"Nice! You were rewarded {result.Xp} XP, keep it up!");
             return RedirectToAction("OffersMine", "Trucker");
         }
         [HttpPost]
         public async Task<IActionResult> FailOffer(int offerId)
         {
             var userId = User.Id();
-            var explost = await truckerService.FailOffer(userId, offerId);
-            if (explost == 1) notyf.Error("Eek, you were sanctioned a level for that! Do well next time!");
-            else notyf.Error($"You failed the task and lost {explost} XP, a bit disappointing...");
+            var result = await truckerService.FailOffer(userId, offerId);
+            if (result.WasLeveledUp) notyf.Error("Eek, you were sanctioned a level for that! Do better next time!");
+            else notyf.Error($"You failed the task and lost {result.Xp} XP, a bit disappointing...");
             return RedirectToAction("OffersMine", "Trucker");
         }
     }

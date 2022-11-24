@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Globalization;
 using System.Security;
+using System.Xml.XPath;
 using Tirajii.Data;
 using Tirajii.Data.Models;
 using Tirajii.Models;
@@ -203,28 +204,58 @@ namespace Tirajii.Services
             return await context.Offers.Include(x => x.Company).Include(x => x.Category).Where(x => x.TruckerId == user.Trucker.Id && x.IsCompleted).ToListAsync();
         }
 
-        public async Task<int> OfferSucceed(string userId, int offerId)
+        public async Task<ExperienceModel> OfferSucceed(string userId, int offerId)
         {
-            var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
+            var user = await context.Users.Include(x => x.Trucker).Include(x => x.Wallet).FirstAsync(x => x.Id == userId);
             var offer = await context.Offers.FirstAsync(x => x.Id == offerId);
+            var company = await context.Companies.Include(x => x.Owner).ThenInclude(x => x.Wallet).FirstAsync(x => x.Id == offer.CompanyId);
             user.Trucker.Experience += offer.ExpAmount;
             offer.IsCompleted = true;
-            if (user.Trucker.Experience >= 10) { user.Trucker.Level++; user.Trucker.Experience -= 10; await context.SaveChangesAsync(); return user.Trucker.Level; }
+            user.Wallet.Balance += offer.Payment;
+            company.Owner.Wallet.Balance += 1.30M * offer.Payment;
+            if (user.Trucker.Experience >= 10)
+            {
+                user.Trucker.Level++; user.Trucker.Experience -= 10;
+                await context.SaveChangesAsync();
+                return new ExperienceModel()
+                {
+                    WasLeveledUp = true,
+                    Level = user.Trucker.Level
+                };
+            }
             await context.SaveChangesAsync();
-            return user.Trucker.Experience;
+            return new ExperienceModel()
+            {
+                GainedXp = true,
+                Xp = user.Trucker.Experience
+            };
         }
 
-        public async Task<int> FailOffer(string userId, int offerId)
+        public async Task<ExperienceModel> FailOffer(string userId, int offerId)
         {
-            var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
+            var user = await context.Users.Include(x => x.Trucker).Include(x => x.Wallet).FirstAsync(x => x.Id == userId);
             var offer = await context.Offers.FirstAsync(x => x.Id == offerId);
             user.Trucker.Experience -= offer.ExpAmount*2;
             offer.IsTaken = false;
             offer.TruckerId = null;
-            if (user.Trucker.Experience <= 0) { user.Trucker.Level--; await context.SaveChangesAsync(); return user.Trucker.Level; }
+            user.Wallet.Balance-= offer.Payment/5;
+            if (user.Wallet.Balance < 0) user.Wallet.Balance = 0;
+            if (user.Trucker.Experience <= 0) 
+            { 
+                user.Trucker.Level--; 
+                user.Trucker.Experience = 0; 
+                await context.SaveChangesAsync(); 
+                return new ExperienceModel()
+                {
+                    WasLeveledUp = true
+                };
+            }
             await context.SaveChangesAsync();
-            return offer.ExpAmount;
-            
+            return new ExperienceModel()
+            {
+                GainedXp = true,
+                Xp = offer.ExpAmount * 2
+            };
         }
     }
 }

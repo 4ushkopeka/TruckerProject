@@ -132,7 +132,7 @@ namespace Tirajii.Services
 
         public async Task<Truck> GetTruckById(int truckId)
         {
-            return await context.Trucks.FirstAsync(x => x.Id == truckId);
+            return await context.Trucks.Include(x => x.Company).FirstAsync(x => x.Id == truckId);
         }
 
         public async Task<List<Truck>> GetMyTrucksForOffer(string userId)

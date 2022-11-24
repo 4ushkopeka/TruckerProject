@@ -1,9 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Identity; 
 @using Tirajii.Data.Models;
 @using Tirajii.Infrastructure.Extensions
+@using Tirajii.Services.Contracts
 @inject SignInManager<User> SignInManager;
 @inject UserManager<User> UserManager;
-
+@inject IUserService users
 <style>
     a {
         cursor: pointer
@@ -18,8 +19,7 @@
     @if (SignInManager.IsSignedIn(User))
     {
         var userId = User.Id();
-        var user = await UserManager.FindByIdAsync(userId);
-        //var userIsArtist = Artists.IsArtist(userId);
+        var _user = await UserManager.FindByIdAsync(userId);
         //var userIsAdmin = User.IsAdmin();
 
         <li class="nav-item dropstart" style="width: 60px;">
@@ -28,7 +28,7 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li><a class="dropdown-item fw-bold" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Manage Account</a></li>
-                @if (user.IsTrucker)
+                @if (_user.IsTrucker)
                 {
                     <form method="get">
                          <li><a class="dropdown-item fw-bold" asp-area="" asp-action="Configure" asp-controller="Trucker">Configure truck</a></li>
@@ -36,14 +36,14 @@
                     <li><a class="dropdown-item fw-bold" asp-area="" asp-action="OffersCompleted" asp-controller="Trucker">My Completed Offers</a></li>
                      </form>
                 }
-                else if (user.IsOfferCompanyOwner)
+                else if (_user.IsOfferCompanyOwner)
                 {
                     <form method="get">
                     <li><a class="dropdown-item fw-bold" asp-area="" asp-action="Rating" asp-controller="Company">My Rating</a></li>
                     <li><a class="dropdown-item fw-bold" asp-area="" asp-action="OfferMine" asp-controller="Company">My Offers</a></li>
                     </form>
                 }
-                else if (user.IsTruckerCompanyOwner)
+                else if (_user.IsTruckerCompanyOwner)
                 {
                     <form method="get">
                     <li><a class="dropdown-item fw-bold" asp-area="" asp-action="Rating" asp-controller="Company">My Rating</a></li>
@@ -80,93 +80,95 @@
 </ul>
 
 
-
+    
 @if (SignInManager.IsSignedIn(User)) //&& !User.IsAdmin())
 {
-    <a class="ml-1" data-bs-toggle="modal" data-bs-target="#walletModal" style="width: 40px">
-        <img src="~/pictures/wallet.png" alt="" height="40" width="40" />
-    </a>
-
-    //var balance = Users.GetBalanceByUserId(User.Id());
-}
-@*    @if (balance == -1)
-{
-    <div class="modal fade" id="walletModal" tabindex="-1" aria-labelledby="yourWalletConnectLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Wallet</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <span>Connect your wallet in order to be able to purchase items!</span>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <div>
-                  <a class="btn btn-primary" asp-controller="Users" asp-action="ConnectWallet">Connect</a>
-              </div>
-            </div>
-          </div>
-        </div>
-    </div>
-}
-else
-{
-    <div class="modal fade" id="walletModal" tabindex="-1" aria-labelledby="yourWalletLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="yourWalletLabel">Your wallet</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <span class="align-middle">
-                    Your current balance is: 
-                </span>
-                <span class="align-middle fw-bold">
-                    @balance
-                </span>
-                <span class="align-middle">
-                    <img src="~/img/coin.png" width="25" heigth="25" />
-                </span>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <a type="button" class="btn btn-primary" asp-controller="Users" asp-action="FillWallet">Fill wallet</a>
-            </div>
-          </div>
-        </div>
-    </div>
-}*@
-
-
-
-
-
-
-
-
-
-
-
-
-@*<ul class="navbar-nav">
-    @if (SignInManager.IsSignedIn(User))
+    var user = await UserManager.FindByIdAsync(User.Id());
+    if (user.IsTrucker || user.IsOfferCompanyOwner || user.IsTruckerCompanyOwner)
     {
-            <li class="nav-item">
-                <form class="form-inline" asp-controller="User" asp-action="Logout" asp-route-id="@UserManager.GetUserId(User)">
-                    <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-                </form>
-            </li>
+        <a class="ml-1" data-bs-toggle="modal" data-bs-target="#walletModal" style="width: 40px">
+            <img src="~/pictures/wallet.png" alt="" height="40" width="40" />
+        </a>
+        var balance = users.GetBalanceByUserId(User.Id());
+        @if (balance == -1)
+        {
+            <div class="modal fade" id="walletModal" tabindex="-1" aria-labelledby="yourWalletConnectLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Wallet</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <span>Connect your wallet in order to be able to purchase items!</span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <div>
+                                <a class="btn btn-primary" asp-controller="User" asp-action="ConnectWallet">Connect</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            if (user.IsTrucker)
+            {
+                <div class="modal fade" id="walletModal" tabindex="-1" aria-labelledby="yourWalletLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="yourWalletLabel">Your wallet</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <span class="align-middle">
+                                    Your current balance is:
+                                </span>
+                                <span class="align-middle fw-bold">
+                                    @balance
+                                </span>
+                                <span class="align-middle">
+                                    <img src="~/pictures/coin.png" width="25" heigth="25" />
+                                </span>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <a type="button" class="btn btn-primary" asp-controller="Trucker" asp-action="Offers">Earn more money</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="modal fade" id="walletModal" tabindex="-1" aria-labelledby="yourWalletLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="yourWalletLabel">Your wallet</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <span class="align-middle">
+                                    Our site has netted you extra
+                                </span>
+                                <span class="align-middle fw-bold">
+                                    @balance
+                                </span>
+                                <span class="align-middle">
+                                    <img src="~/pictures/coin.png" width="25" heigth="25" />
+                                </span>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
     }
-    else
-    {
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="User" asp-action="Register">Register</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="User" asp-action="Login">Login</a>
-            </li>
-    }
-</ul>*@
+}

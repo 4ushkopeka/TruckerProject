@@ -24,6 +24,7 @@ namespace Tirajii.Data
         public DbSet<Truck> Trucks { get; set; }
         public DbSet<TruckingCategory> TruckingCategories { get; set; }
         public DbSet<TruckClass> TruckClasses { get; set; }
+        public DbSet<Wallet> Wallets { get; init; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<TruckOffer>(x =>

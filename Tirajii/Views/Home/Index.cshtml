@@ -76,61 +76,146 @@
         <h4 class="text-center">Or perhaps configure your truck?</h4>
         <br />
         <br />
-        <form method="get">
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="Offers" asp-controller="Trucker">Browse Offers</button>
-                <button type="submit" class="btn btn-outline-secondary" asp-area="" asp-action="General" asp-controller="Truck">Configure your truck</button>
-            </div>
-        </form>
-    }
-    else
-    {
-        if (user.Result.IsTruckerCompanyOwner)
+        if (user.Result.HasWallet)
         {
             <form method="get">
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="RegisterATruck" asp-controller="Company">Register a new truck</button>
-                    <button type="submit" class="btn btn-outline-secondary" asp-area="" asp-action="GetMyTrucks" asp-controller="Company">Add a truck Offer</button>
+                    <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="Offers" asp-controller="Trucker">Browse Offers</button>
+                    <button type="submit" class="btn btn-outline-secondary" asp-area="" asp-action="General" asp-controller="Truck">Configure your truck</button>
                 </div>
             </form>
         }
         else
         {
-            <form method="get">
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="OfferAdd" asp-controller="Company">Add an Offer</button>
-                    <button type="submit" class="btn btn-outline-secondary" asp-area="" asp-action="OfferMine" asp-controller="Company">See what offers you provide</button>
+            <div class="d-grid gap-2">
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Browse Offers
+                </button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Configure your truck
+                </button>
+            </div>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Error!</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            This action requires you to coonect a wallet.
+                        </div>
+                        <div class="modal-footer">
+                            <form>
+                                <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" asp-action="ConnectWallet" asp-controller="User">Connect wallet</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </form>
+            </div>
+        }
+        
+    }
+    else
+    {
+        if (user.Result.IsTruckerCompanyOwner)
+        {
+            if (user.Result.HasWallet)
+            {
+                <form method="get">
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="RegisterATruck" asp-controller="Company">Register a new truck</button>
+                        <button type="submit" class="btn btn-outline-secondary" asp-area="" asp-action="GetMyTrucks" asp-controller="Company">Add a truck Offer</button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="d-grid gap-2">
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Register a new truck
+                </button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Add a truck Offer
+                </button></div>
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Error!</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                This action requires you to coonect a wallet.
+                            </div>
+                            <div class="modal-footer">
+                                <form>
+                                    <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" asp-action="ConnectWallet" asp-controller="User">Connect wallet</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            } 
+        }
+        else
+        {
+            if (user.Result.HasWallet)
+            {
+                <form method="get">
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="OfferAdd" asp-controller="Company">Add an Offer</button>
+                        <button type="submit" class="btn btn-outline-secondary" asp-area="" asp-action="OfferMine" asp-controller="Company">See what offers you provide</button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="d-grid gap-2">
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Add an Offer
+                </button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        See what offers you provide
+                </button>
+                </div>
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Error!</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                This action requires you to coonect a wallet.
+                            </div>
+                            <div class="modal-footer">
+                                <form>
+                                    <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary" asp-action="ConnectWallet" asp-controller="User">Connect wallet</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         }
     }
 }
 else
 {
-    <div class="d-grid gap-2">
-    <button type="submit" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Become a trucker!
-    </button>
-    <button type="submit" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Register your company!
-    </button>
-    </div>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Error!</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    You must Log in/Register first!
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
+    <form method="get">
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-outline-primary" asp-action="Login" asp-controller="User">
+             Become a trucker!
+            </button>
+            <button type="submit" class="btn btn-outline-secondary" asp-action="Login" asp-controller="User">
+            Register your company!
+            </button>
         </div>
-    </div>
+    </form>
 }
 
 

@@ -1,19 +1,46 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Tirajii.Data.Models;
+using Tirajii.Infrastructure.Extensions;
 using Tirajii.Models.User;
+using Tirajii.Services.Contracts;
 
 namespace Tirajii.Controllers
 {
     public class UserController : Controller
     {
+        private readonly IUserService userService;    
+        private readonly INotyfService notyf;    
         private readonly UserManager<User> userManager;
         private readonly SignInManager<User> signManager;
-        public UserController(UserManager<User> userManager, SignInManager<User> signManager)
+        public UserController(UserManager<User> userManager, SignInManager<User> signManager, 
+            IUserService _userService, INotyfService _notyf)
         {
             this.userManager = userManager;
             this.signManager = signManager;
+            this.userService = _userService;
+            notyf = _notyf;
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Purchase(int truckId)
+        {
+            var userId = this.User.Id();
+            var successfulPurchase = await userService.Purchase(truckId, userId);
+            if (!successfulPurchase) return BadRequest();
+            notyf.Success("You successfully purchased a Truck!");
+            return RedirectToAction("General", "Truck");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> ConnectWallet()
+        {
+            var userId = this.User.Id();
+            var canConnect = await userService.ConnectWallet(userId);
+            if (!canConnect) return BadRequest();
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
@@ -27,6 +54,7 @@ namespace Tirajii.Controllers
             var mod = new LoginViewModel();
             return View(mod);
         }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -47,6 +75,7 @@ namespace Tirajii.Controllers
             ModelState.AddModelError("", "Login failed.");
             return View(model);
         }
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register()
@@ -58,6 +87,7 @@ namespace Tirajii.Controllers
             var model = new RegisterViewModel();
             return View(model);
         }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -82,6 +112,7 @@ namespace Tirajii.Controllers
             }
             return View(model);
         }
+
         [Authorize]
         public async Task<IActionResult> Logout()
         {

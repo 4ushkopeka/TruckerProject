@@ -15,5 +15,9 @@ namespace Tirajii.Data.Models
         public Trucker? Trucker { get; set; }
 
         public Company? Company { get; set; }
+
+        public Wallet? Wallet { get; set; }
+
+        public bool HasWallet { get; set; }
     }
 }
