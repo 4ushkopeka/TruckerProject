@@ -1,10 +1,37 @@
 ﻿@using Tirajii.Data.Models
 @model IEnumerable<Offer>
+<style>
+      .meter { 
+        height: 5px;
+        position: relative;
+        background: #f3efe6;
+        overflow: hidden;
+    }
+    
+    .meter span {
+        display: block;
+        height: 100%;
+    }
+    
+    .progress {
+        background-color: #31d612;
+        animation: progressBar 6s ease-in-out;
+        animation-fill-mode:both; 
+    }
+    
+    @@keyframes progressBar {
+      0% { width: 0; }
+      100% { width: 100%; }
+    } </style>
 <div class="text-center row">
     <h2>My offers:</h2>
     <hr />
     @foreach (var item in Model)
     {
+        var rand = -1;
+        if (item.CategoryId != ViewBag.User.Trucker.CategoryId) rand = new Random().Next(0, 3);
+        else rand = new Random().Next(0,7);
+        bool success = (rand == 0) ? false : true;
         <div class="card" style="width: 18rem;">
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
@@ -13,11 +40,68 @@
                     <p class="card-text">Company: @item.Company.Name</p>
                     <p class="card-text">Due Date: @item.DueDate.ToString("dd/MM/yyyy")</p>
                     <p class="card-text">Category: @item.Category.Name</p>
-                        <form method="get">
-                            <button type="submit" class="btn btn-outline-primary" asp-area="" asp-route-offerId="@item.Id" asp-action="StartOffer" asp-controller="Trucker">Start</button>
+                        <form method="post">
+                        @if (success)
+                        {
+                            <button type="button" onclick="DisableFor10Seconds();HideFor10Seconds();" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                Start
+                            </button>
+                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="staticBackdropLabel">Trucking...</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="meter">
+                                                <span style="width:100%;"><span class="progress"></span></span>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <label id="su" class="align-content-lg-start">You successfully completed an offer!</label>
+                                            <button type="submit" id="tryme" class="btn btn-outline-success" data-bs-dismiss="modal" asp-area="" asp-route-offerId="@item.Id" asp-action="CompleteOffer" asp-controller="Trucker">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                         else
+                        {
+                            <button type="button" id="tryme" onclick="DisableFor10Seconds();HideFor10Seconds();" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
+                                Start
+                            </button>
+                            <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="staticBackdropLabel">Trucking...</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="meter">
+                                                <span style="width:83%;"><span class="progress"></span></span>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <label id="su" class="align-content-lg-start">You failed. The offer has been revoked, therefore.</label>
+                                            <button type="submit" id="tryme" class="btn btn-outline-dnger" data-bs-dismiss="modal" asp-area="" asp-route-offerId="@item.Id" asp-action="FailOffer" asp-controller="Trucker">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }   
                         </form>
                 </div>
             </div>
         </div>
     }
 </div>
+<script>
+    function DisableFor10Seconds() {
+        document.getElementById("tryme").disabled = true;
+        setTimeout(function () { document.getElementById("tryme").disabled = false; }, 6000);
+    }
+    function HideFor10Seconds() {
+        document.getElementById("su").hidden = true;
+        setTimeout(function () { document.getElementById("su").hidden = false; }, 6000);
+    }
+</script>

@@ -195,12 +195,36 @@ namespace Tirajii.Services
         public async Task<List<Offer>> GetMyOffers(string userId)
         {
             var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
-            return await context.Offers.Include(x => x.Company).Include(x => x.Category).Where(x => x.TruckerId == user.Trucker.Id).ToListAsync();
+            return await context.Offers.Include(x => x.Company).Include(x => x.Category).Where(x => x.TruckerId == user.Trucker.Id && !x.IsCompleted).ToListAsync();
         }
         public async Task<List<Offer>> GetMyCompletedOffers(string userId)
         {
             var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
             return await context.Offers.Include(x => x.Company).Include(x => x.Category).Where(x => x.TruckerId == user.Trucker.Id && x.IsCompleted).ToListAsync();
+        }
+
+        public async Task<int> OfferSucceed(string userId, int offerId)
+        {
+            var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
+            var offer = await context.Offers.FirstAsync(x => x.Id == offerId);
+            user.Trucker.Experience += offer.ExpAmount;
+            offer.IsCompleted = true;
+            if (user.Trucker.Experience >= 10) { user.Trucker.Level++; user.Trucker.Experience -= 10; await context.SaveChangesAsync(); return user.Trucker.Level; }
+            await context.SaveChangesAsync();
+            return user.Trucker.Experience;
+        }
+
+        public async Task<int> FailOffer(string userId, int offerId)
+        {
+            var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
+            var offer = await context.Offers.FirstAsync(x => x.Id == offerId);
+            user.Trucker.Experience -= offer.ExpAmount*2;
+            offer.IsTaken = false;
+            offer.TruckerId = null;
+            if (user.Trucker.Experience <= 0) { user.Trucker.Level--; await context.SaveChangesAsync(); return user.Trucker.Level; }
+            await context.SaveChangesAsync();
+            return offer.ExpAmount;
+            
         }
     }
 }

@@ -147,6 +147,7 @@ namespace Tirajii.Controllers
         {
             var userId = User.Id();
             var offers = await truckerService.GetMyOffers(userId);
+            ViewBag.User = await truckerService.GetUserWithTrucker(User.Id());
             return View(offers);
         }
         [HttpGet]
@@ -157,10 +158,23 @@ namespace Tirajii.Controllers
             return View(offers);
         }
         
-        [HttpGet]
-        public async Task<IActionResult> StartOffer(int offerId)
+        [HttpPost]
+        public async Task<IActionResult> CompleteOffer(int offerId)
         {
-            return View();
+            var userId = User.Id();
+            var expgained = await truckerService.OfferSucceed(userId, offerId);
+            if (expgained==1) notyf.Success("Nice! You levelled up, keep it up!");
+            else notyf.Success($"Nice! You were rewarded {expgained} XP, keep it up!");
+            return RedirectToAction("OffersMine", "Trucker");
+        }
+        [HttpPost]
+        public async Task<IActionResult> FailOffer(int offerId)
+        {
+            var userId = User.Id();
+            var explost = await truckerService.FailOffer(userId, offerId);
+            if (explost == 1) notyf.Error("Eek, you were sanctioned a level for that! Do well next time!");
+            else notyf.Error($"You failed the task and lost {explost} XP, a bit disappointing...");
+            return RedirectToAction("OffersMine", "Trucker");
         }
     }
 }

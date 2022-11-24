@@ -38,5 +38,9 @@ namespace Tirajii.Services.Contracts
         Task<List<Offer>> GetMyCompletedOffers(string userId);
         
         Task ClaimAnOffer(string userId, int offerId);
+
+        Task<int> OfferSucceed(string userId, int offerId);
+
+        Task<int> FailOffer(string userId, int offerId);
     }
 }
