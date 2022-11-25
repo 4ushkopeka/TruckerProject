@@ -8,6 +8,8 @@ namespace Tirajii.Services.Contracts
     {
         Task RegisterCompany(CompanyRegisterViewModel model, string userId);
 
+        Task EditCompany(CompanyRegisterViewModel model, string userId);
+
         Task RegisterTruck(TruckViewModel model, string userId);
 
         Task<List<CompanyCategory>> GetAllCompanyCategories();
@@ -15,11 +17,14 @@ namespace Tirajii.Services.Contracts
         Task<List<TruckClass>> GetAllClasses();
 
         Task<List<Truck>> GetMyTrucks(string userId);
+
         Task<List<Truck>> GetMyTrucksForOffer(string userId);
 
         Task<List<Offer>> GetMyOffers(string userId);
 
         Task<Truck> GetTruckById(int truckId);
+
+        Task<User> GetUserWithCompany(string userId);
 
         Task<List<TruckOffer>> GetMyTruckOffers(string userId);
 
@@ -28,6 +33,7 @@ namespace Tirajii.Services.Contracts
         Task AddOffer(OfferAddViewModel model, string UserId);
 
         Task<RatingViewModel> GetRating(string userId);
+
         Task<List<TruckingCategory>> GetAllOfferCategories();
     }
 }

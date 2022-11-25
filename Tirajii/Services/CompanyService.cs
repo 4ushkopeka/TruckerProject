@@ -155,5 +155,20 @@ namespace Tirajii.Services
             };
             return model;
         }
+
+        public async Task EditCompany(CompanyRegisterViewModel model, string userId)
+        {
+            var user = await context.Users.Include(x => x.Company).FirstAsync(x => x.Id == userId);
+            var company = user.Company;
+
+            company.Picture = model.Picture;
+            company.Name = model.Name;
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<User> GetUserWithCompany(string userId)
+        {
+            return await context.Users.Include(x => x.Company).FirstAsync(x => x.Id == userId);
+        }
     }
 }

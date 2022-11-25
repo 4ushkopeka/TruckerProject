@@ -28,7 +28,6 @@ namespace Tirajii.Models.Trucker
         [Required]
         public int CategoryId { get; set; }
 
-        [Required]
         public ICollection<TruckingCategory> TruckingCategories { get; set; } = new List<TruckingCategory>();
     }
 }

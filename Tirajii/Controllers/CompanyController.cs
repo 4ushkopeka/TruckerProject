@@ -8,6 +8,7 @@ using Tirajii.Models.Company;
 using Tirajii.Models.Trucker;
 using Tirajii.Services.Contracts;
 using Tirajii.Infrastructure.Extensions;
+using Tirajii.Services;
 
 namespace Tirajii.Controllers
 {
@@ -51,7 +52,7 @@ namespace Tirajii.Controllers
                 ModelState.AddModelError("", ex.Message);
                 notyf.Error(ex.Message);
                 return View(model);
-            } 
+            }
         }
 
         [HttpGet]
@@ -85,7 +86,7 @@ namespace Tirajii.Controllers
             }
         }
         [HttpGet]
-        public  IActionResult TruckOfferAdd(int id)
+        public IActionResult TruckOfferAdd(int id)
         {
             var offer = new TruckOfferAddViewModel()
             {
@@ -98,7 +99,7 @@ namespace Tirajii.Controllers
         {
             var userId = this.User.Id();
             var trucks = await companyService.GetMyTrucksForOffer(userId);
-            return View("CompanyTrucks",trucks);
+            return View("CompanyTrucks", trucks);
         }
         [HttpPost]
         public async Task<IActionResult> TruckOfferAdd(TruckOfferAddViewModel model, int truckId, int companyId)
@@ -171,7 +172,7 @@ namespace Tirajii.Controllers
 
             return View(model);
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> TrucksMine()
         {
@@ -208,6 +209,41 @@ namespace Tirajii.Controllers
                 ModelState.AddModelError("", ex.Message);
                 notyf.Error(ex.Message);
                 return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditProfile()
+        {
+            var user = await companyService.GetUserWithCompany(User.Id());
+            var model = new CompanyRegisterViewModel
+            {
+                Name = user.Company.Name,
+                Picture = user.Company.Picture,
+                CategoryId = user.Company.CategoryId,
+                Categories = await companyService.GetAllCompanyCategories()
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(CompanyRegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            try
+            {
+                var userId = this.User.Id();
+                await companyService.EditCompany(model, userId);
+                notyf.Information("Successfully edited your profile");
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                notyf.Error(ex.Message);
+                return View(model);
             }
         }
     }

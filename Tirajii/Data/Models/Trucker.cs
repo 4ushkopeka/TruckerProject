@@ -9,6 +9,10 @@ namespace Tirajii.Data.Models
         public int Id { get; set; }
 
         [Required]
+        [StringLength(500, MinimumLength = 0)]
+        public string Description { get; set; }
+
+        [Required]
         public string Name { get; set; }
 
         [ForeignKey(nameof(User))]

@@ -2,8 +2,9 @@
 @model TruckerRegisterViewModel
 
 @{
-    ViewBag.Title = "Register as a Trucker!";
+    ViewBag.Title = "Edit Profile:";
 }
+<img class="align-self-sm-stretch" src="@Model.Picture" />
 <partial name="_RegisterAndEditTruckerPartial" model="@Model" />
 
 @section Scripts {

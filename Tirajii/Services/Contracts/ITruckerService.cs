@@ -8,6 +8,8 @@ namespace Tirajii.Services.Contracts
     {
         Task RegisterTrucker(TruckerRegisterViewModel model, string userId);
 
+        Task EditTrucker(TruckerRegisterViewModel model, string userId);
+
         Task<List<TruckingCategory>> GetAllTruckingCategories();
 
         Task<List<CompanyCategory>> GetAllCompanyCategories();

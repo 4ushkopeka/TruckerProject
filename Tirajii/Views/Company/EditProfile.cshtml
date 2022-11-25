@@ -2,8 +2,9 @@
 @model CompanyRegisterViewModel
 
 @{
-    ViewBag.Title = "Register a company!";
+    ViewBag.Title = "Edit Collection";
 }
+<img class ="align-self-sm-stretch" src="@Model.Picture" />
 <partial name="_RegisterAndEditPartial" model="@Model" />
 
 @section Scripts {

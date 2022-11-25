@@ -60,11 +60,20 @@ body {
   color: white;
 }
 @{
-    var fstarper = (Model.Count5*100)/Model.Total;
-    var fourstarper = (Model.Count4*100)/Model.Total;
-    var threestarper = (Model.Count3*100)/Model.Total;
-    var twostarper = (Model.Count2*100)/Model.Total;
-    var onestarper = (Model.Count1*100)/Model.Total;
+    var fstarper = 0;
+    var fourstarper = 0;
+    var threestarper = 0;
+    var twostarper = 0;
+    var onestarper = 0;
+    if (Model.Total!=0)
+    {
+        fstarper = (Model.Count5*100)/Model.Total;
+        fourstarper = (Model.Count4*100)/Model.Total;
+        threestarper = (Model.Count3*100)/Model.Total;
+        twostarper = (Model.Count2*100)/Model.Total;
+        onestarper = (Model.Count1*100)/Model.Total;
+    }
+    
 }
 /* Individual bars */
 .bar-5 {width: @fstarper%; height: 18px; background-color: #04AA6D;}

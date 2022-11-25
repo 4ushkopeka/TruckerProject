@@ -29,38 +29,44 @@
                             if (!user.Result.IsTrucker && !user.Result.IsTruckerCompanyOwner && !user.Result.IsOfferCompanyOwner)
                             {
                             }
-                            else if (user.Result.IsTrucker)
+                            if (user.Result.HasWallet)
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Trucker" asp-action="Offers">Offers</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Trucker" asp-action="AllCompanies">Companies</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Trucker" asp-action="TruckOffersAll">Trucks</a>
-                                </li>
-                            }
-                            else
-                            {
-                                if (user.Result.IsTruckerCompanyOwner)
+                                if (user.Result.IsTrucker)
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="TruckOfferMine">My Offers</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Trucker" asp-action="Offers">Offers</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="TrucksMine">My Trucks</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Trucker" asp-action="AllCompanies">Companies</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Trucker" asp-action="TruckOffersAll">Trucks</a>
                                     </li>
                                 }
                                 else
                                 {
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="OfferMine">My Offers</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Trucker" asp-action="AllCompanies">All Companies</a>
-                                    </li>
+                                    if (user.Result.IsTruckerCompanyOwner)
+                                    {
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="TruckOfferMine">My Offers</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="TrucksMine">My Trucks</a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="OfferMine">My Offers</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Trucker" asp-action="AllCompanies">All Companies</a>
+                                        </li>
+                                    }
                                 }
+                            }
+                            else
+                            {
                             }
                         }
                     </ul>

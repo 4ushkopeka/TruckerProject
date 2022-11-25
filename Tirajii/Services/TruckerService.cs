@@ -132,7 +132,8 @@ namespace Tirajii.Services
                 ProfilePicture = model.Picture,
                 PhoneNumber = model.PhoneNumber,
                 Experience = 0,
-                Level = 0
+                Level = 0,
+                Description = model.Description
             };
             user.IsTrucker = true;
             user.Trucker = trucker;
@@ -256,6 +257,20 @@ namespace Tirajii.Services
                 GainedXp = true,
                 Xp = offer.ExpAmount * 2
             };
+        }
+
+        public async Task EditTrucker(TruckerRegisterViewModel model, string userId)
+        {
+            var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
+            var trucker = user.Trucker;
+
+            trucker.PhoneNumber = model.PhoneNumber;
+            trucker.Description = model.Description;
+            trucker.Email = model.Email;
+            trucker.ProfilePicture = model.Picture;
+            trucker.Name = model.FullName;
+            trucker.PhoneNumber = model.PhoneNumber;
+            await context.SaveChangesAsync();
         }
     }
 }

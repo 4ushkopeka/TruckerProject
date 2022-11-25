@@ -54,6 +54,44 @@ namespace Tirajii.Controllers
             }
         }
         [HttpGet]
+        public async Task<IActionResult> EditProfile()
+        {
+            var user = await truckerService.GetUserWithTrucker(User.Id());
+            var model = new TruckerRegisterViewModel
+            {
+                FullName = user.Trucker.Name,
+                PhoneNumber = user.Trucker.PhoneNumber,
+                Email = user.Trucker.Email,
+                CategoryId = user.Trucker.CategoryId,
+                Picture = user.Trucker.ProfilePicture,
+                Description = user.Trucker.Description,
+                TruckingCategories = await truckerService.GetAllTruckingCategories()
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProfile(TruckerRegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            try
+            {
+                var userId = this.User.Id();
+                await truckerService.EditTrucker(model, userId);
+                notyf.Information("Successfully edited your profile");
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                notyf.Error(ex.Message);
+                return View(model);
+            }
+        }
+        [HttpGet]
         public async Task<IActionResult> Offers(AllOffersViewModel model)
         {
             var result = truckerService.GetAllOffers(model.Category,
