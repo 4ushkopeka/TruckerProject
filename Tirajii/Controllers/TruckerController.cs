@@ -127,7 +127,7 @@ namespace Tirajii.Controllers
             model.Categories = categories;
             model.TotalOffers = result.TotalOffers;
 
-            ViewBag.User = truckerService.GetUserWithTrucker(User.Id());
+            ViewBag.User = truckerService.GetUserWithTrucker(User.Id()).Result;
             return View(model);
         }
 

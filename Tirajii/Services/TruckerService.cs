@@ -283,7 +283,7 @@ namespace Tirajii.Services
         {
             var user = await GetUserWithTrucker(userId);
             var wallet = await context.Wallets.FirstAsync(u => u.UserId == userId);
-            var offer = await context.TruckOffers.Include(x => x.Truck).FirstAsync(n => n.Id == truckId);
+            var offer = await context.TruckOffers.Include(x => x.Truck).FirstAsync(n => n.Truck.Id == truckId);
             var company = await context.Companies.FirstAsync(u => u.Id == offer.CompanyId);
             var ownerWallet = await context.Wallets.FirstAsync(w => w.UserId == company.OwnerId);
 
@@ -296,7 +296,7 @@ namespace Tirajii.Services
             offer.Truck.IsForSale = false;
             ownerWallet.Balance += offer.Cost*1.35M;
             offer.Truck.Owner = user;
-            user.Wallet.Balance -= offer.Cost;
+            wallet.Balance -= offer.Cost;
             user.Trucker.TruckId = truckId;
 
             await context.SaveChangesAsync();

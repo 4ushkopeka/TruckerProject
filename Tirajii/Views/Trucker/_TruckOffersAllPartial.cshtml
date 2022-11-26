@@ -1,5 +1,48 @@
 ﻿@using Tirajii.Data.Models
 @model IEnumerable<TruckOffer>
+<style>
+#snackbar {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;} 
+  to {bottom: 30px; opacity: 1;}
+}
+
+@@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;} 
+  to {bottom: 0; opacity: 0;}
+}
+
+@@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+</style>
 <div class="text-center row">
 
     @foreach (var item in Model)
@@ -52,45 +95,55 @@
                 {
                     <p>Has Parktronic: <img src="~/pictures/check-solid.svg" width="17" height="17" /></p>
                 }
-                <form method="post">
-                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                        Buy
-                    </button>
-                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="staticBackdropLabel">Buy this truck?</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                    @if (item.Name!=null)
-                                    {
-                                    <div class="modal-body">
-                                        Would you like to buy @item.Name?
+                @if (ViewBag.User.Trucker.TruckId is null)
+                {
+                    <form method="post">
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            Buy
+                        </button>
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Buy this truck?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
+                                    @if (item.Name != null)
+                                    {
+                                        <div class="modal-body">
+                                            Would you like to buy @item.Name?
+                                        </div>
                                     }
                                     else
                                     {
-                                    <div class="modal-body">
-                                        Would you like to buy this rusty beast?
-                                    </div>
+                                        <div class="modal-body">
+                                            Would you like to buy this rusty beast?
+                                        </div>
                                     }
-                                    @if (ViewBag.User.Trucker.TruckId is not null)
-                                    {
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-outline-success" asp-route-truckid="@item.TruckId" asp-area="" asp-action="Purchase" asp-controller="Trucker">Buy</button>
+                                        <button type="submit" class="btn btn-success" asp-route-truckid="@item.TruckId" asp-area="" asp-action="Purchase" asp-controller="Trucker">Buy</button>
                                     </div>
-                                    }
-                                    else
-                                    {
-                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="You already have a truck, you must sell it in order to buy this one">Buy</button>
-                                    }
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-outline-primary" onclick="myFunction();">Buy</button>
+                    <form method="post">
+                        <div id="snackbar">You cannot buy this truck, as you already own one. <a asp-action="Sell" asp-controller="Truck">Sell</a> yours first?</div>
+                    </form>
+                }
             </div>
         </div>
     }
 </div>
+<script>
+    function myFunction() {
+        var x = document.getElementById("snackbar");
+        x.className = "show";
+        setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+    }
+</script>
