@@ -28,12 +28,24 @@ namespace Tirajii.Services.Contracts
 
         Task<List<TruckOffer>> GetMyTruckOffers(string userId);
 
-        Task AddTruckOffer(TruckOfferAddViewModel model, string userId);
+        Task AddTruckOffer(TruckOfferAddNEditViewModel model, string userId);
 
-        Task AddOffer(OfferAddViewModel model, string UserId);
+        Task AddOffer(OfferAddNEditViewModel model, string UserId);
 
         Task<RatingViewModel> GetRating(string userId);
 
         Task<List<TruckingCategory>> GetAllOfferCategories();
+
+        Task EditOffer(OfferAddNEditViewModel model, int offerId);
+
+        Task<Offer> GetOfferById(int offerId);
+
+        Task<TruckOffer> GetTruckOfferById(int truckOfferId);
+
+        Task EditTruckOffer(TruckOfferAddNEditViewModel model, int truckOfferId);
+
+        Task DeleteTruckOffer(int truckOfferId);
+
+        Task DeleteOffer(int offerId);
     }
 }

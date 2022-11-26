@@ -30,7 +30,7 @@
     {
         var rand = -1;
         if (item.CategoryId != ViewBag.User.Trucker.CategoryId) rand = new Random().Next(0, 3);
-        else rand = new Random().Next(0,7);
+        else rand = new Random().Next(0,8);
         bool success = (rand == 0) ? false : true;
         <div class="card" style="width: 18rem;">
             <div class="card" style="width: 18rem;">
@@ -83,7 +83,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <label id="su" class="align-content-lg-start">You failed. The offer has been revoked, therefore.</label>
-                                            <button type="submit" id="tryme" class="btn btn-outline-dnger" data-bs-dismiss="modal" asp-area="" asp-route-offerId="@item.Id" asp-action="FailOffer" asp-controller="Trucker">Close</button>
+                                            <button type="submit" id="tryme" class="btn btn-outline-danger" data-bs-dismiss="modal" asp-area="" asp-route-offerId="@item.Id" asp-action="FailOffer" asp-controller="Trucker">Close</button>
                                         </div>
                                     </div>
                                 </div>

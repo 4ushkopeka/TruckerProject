@@ -2,13 +2,12 @@
 @using Tirajii.Models.Trucker;
 @using Tirajii.Models.Company;
 @model CompanyRegisterViewModel
-<h1 class="text-center">Register your company!</h1>
+<h1 class="text-center">@ViewBag.Title</h1>
 <hr />
 <br />
 <div class="container">
     <div class="row">
         <div class="col-sm-12 offset-lg-3 col-lg-8 offset-xl-3 col-xl-6">
-            <h2 class="mt-1 text-center">@ViewBag.Title</h2>
             <form method="post">
                 <div class="mb-3">
                     <label asp-for="Name"></label>
@@ -21,7 +20,7 @@
                     <span asp-validation-for="Picture" class="small text-danger"> </span>
                 </div>
                 <div class="form-group">
-                    @if (ViewBag.Title != "Edit Collection")
+                    @if (ViewBag.Title != "Edit Company Profile")
                     {
                         <label asp-for="CategoryId">Your category:</label>
                         <select asp-for="CategoryId" class="form-select">

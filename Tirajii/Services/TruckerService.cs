@@ -58,6 +58,7 @@ namespace Tirajii.Services
                 CollectionSorting.Name => offers.OrderBy(c => c.Name),
                 _ => offers.OrderByDescending(c => c.Id)
             };
+            
             return new AllOffersViewModel
             {
                 TotalOffers = totalOffers,
@@ -94,6 +95,7 @@ namespace Tirajii.Services
                 TruckOfferSorting.Company => offers.OrderBy(c => c.Company.Name),
                 _ => offers.OrderByDescending(c => c.Id)
             };
+            
             return new AllTruckOffersViewModel
             {
                 TotalOffers = totalOffers,
@@ -106,23 +108,28 @@ namespace Tirajii.Services
         {
             var company = context.Companies.First(x => x.Id == Id);
             var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
+            
             if (await context.CompanyRatings.ContainsAsync(new CompanyRatings { RaterId = user.Trucker.Id, CompanyId = company.Id}))
             {
                 throw new InvalidOperationException("Cannot rate an already rated company!");
             }
+            
             company.Rating = ((decimal)context.CompanyRatings.Where(x => x.CompanyId == company.Id).Sum(x => x.Rating) + rating) / (context.CompanyRatings.Where(x => x.CompanyId == company.Id).Count()+1);
+            
             await context.CompanyRatings.AddAsync(new CompanyRatings
             {
                 CompanyId = company.Id,
                 RaterId = user.Trucker.Id,
                 Rating = rating
             });
+            
             await context.SaveChangesAsync();
         }
 
         public async Task RegisterTrucker(TruckerRegisterViewModel model, string userId)
         {
             var user = context.Users.First(x => x.Id == userId);
+            
             Trucker trucker = new Trucker()
             {
                 Name = model.FullName,
@@ -137,6 +144,7 @@ namespace Tirajii.Services
             };
             user.IsTrucker = true;
             user.Trucker = trucker;
+            
             await context.Truckers.AddAsync(trucker);
             await context.SaveChangesAsync();
         }
@@ -144,6 +152,7 @@ namespace Tirajii.Services
         public async Task<User> GetUserWithTrucker(string userId)
         {
             var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
+            
             return user;
         }
 
@@ -170,6 +179,7 @@ namespace Tirajii.Services
                 CompanySorting.Name => companies.OrderBy(c => c.Name),
                 _ => companies.OrderByDescending(c => c.Id)
             };
+           
             return new AllCompaniesViewModel
             {
                 TotalCompanies = totalCompanies,
@@ -187,6 +197,7 @@ namespace Tirajii.Services
         {
             var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
             var offer = await  context.Offers.FirstAsync(x => x.Id == offerId);
+            
             user.Trucker.Offers.Add(offer);
             offer.IsTaken = true;
             offer.Trucker = user.Trucker;
@@ -197,11 +208,13 @@ namespace Tirajii.Services
         public async Task<List<Offer>> GetMyOffers(string userId)
         {
             var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
+            
             return await context.Offers.Include(x => x.Company).Include(x => x.Category).Where(x => x.TruckerId == user.Trucker.Id && !x.IsCompleted).ToListAsync();
         }
         public async Task<List<Offer>> GetMyCompletedOffers(string userId)
         {
             var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
+            
             return await context.Offers.Include(x => x.Company).Include(x => x.Category).Where(x => x.TruckerId == user.Trucker.Id && x.IsCompleted).ToListAsync();
         }
 
@@ -210,10 +223,12 @@ namespace Tirajii.Services
             var user = await context.Users.Include(x => x.Trucker).Include(x => x.Wallet).FirstAsync(x => x.Id == userId);
             var offer = await context.Offers.FirstAsync(x => x.Id == offerId);
             var company = await context.Companies.Include(x => x.Owner).ThenInclude(x => x.Wallet).FirstAsync(x => x.Id == offer.CompanyId);
+            
             user.Trucker.Experience += offer.ExpAmount;
             offer.IsCompleted = true;
             user.Wallet.Balance += offer.Payment;
             company.Owner.Wallet.Balance += 1.30M * offer.Payment;
+
             if (user.Trucker.Experience >= 10)
             {
                 user.Trucker.Level++; user.Trucker.Experience -= 10;
@@ -224,7 +239,9 @@ namespace Tirajii.Services
                     Level = user.Trucker.Level
                 };
             }
+
             await context.SaveChangesAsync();
+
             return new ExperienceModel()
             {
                 GainedXp = true,
@@ -236,11 +253,14 @@ namespace Tirajii.Services
         {
             var user = await context.Users.Include(x => x.Trucker).Include(x => x.Wallet).FirstAsync(x => x.Id == userId);
             var offer = await context.Offers.FirstAsync(x => x.Id == offerId);
+
             user.Trucker.Experience -= offer.ExpAmount*2;
             offer.IsTaken = false;
             offer.TruckerId = null;
             user.Wallet.Balance-= offer.Payment/5;
+
             if (user.Wallet.Balance < 0) user.Wallet.Balance = 0;
+
             if (user.Trucker.Experience <= 0) 
             { 
                 user.Trucker.Level--; 
@@ -270,6 +290,7 @@ namespace Tirajii.Services
             trucker.ProfilePicture = model.Picture;
             trucker.Name = model.FullName;
             trucker.PhoneNumber = model.PhoneNumber;
+
             await context.SaveChangesAsync();
         }
     }

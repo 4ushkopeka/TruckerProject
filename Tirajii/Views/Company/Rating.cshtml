@@ -1,6 +1,4 @@
 ﻿@using Tirajii.Models.Company
-
-
 @model RatingViewModel
 <style>
 * {
@@ -60,23 +58,22 @@ body {
   color: white;
 }
 @{
-    var fstarper = 0;
+    var fivestarper = 0;
     var fourstarper = 0;
     var threestarper = 0;
     var twostarper = 0;
     var onestarper = 0;
     if (Model.Total!=0)
     {
-        fstarper = (Model.Count5*100)/Model.Total;
+        fivestarper = (Model.Count5*100)/Model.Total;
         fourstarper = (Model.Count4*100)/Model.Total;
         threestarper = (Model.Count3*100)/Model.Total;
         twostarper = (Model.Count2*100)/Model.Total;
         onestarper = (Model.Count1*100)/Model.Total;
-    }
-    
+    } 
 }
 /* Individual bars */
-.bar-5 {width: @fstarper%; height: 18px; background-color: #04AA6D;}
+.bar-5 {width: @fivestarper%; height: 18px; background-color: #04AA6D;}
 .bar-4 {width: @fourstarper%; height: 18px; background-color: #2196F3;}
 .bar-3 {width: @threestarper%; height: 18px; background-color: #00bcd4;}
 .bar-2 {width: @twostarper%; height: 18px; background-color: #ff9800;}
@@ -125,7 +122,7 @@ else if (Model.AverageRating>=4 && Model.AverageRating<5)
 }
 else
 {
-<span class="fa fa-star checked"></span>
+    <span class="fa fa-star checked"></span>
 <span class="fa fa-star checked"></span>
 <span class="fa fa-star checked"></span>
 <span class="fa fa-star checked"></span>

@@ -1,0 +1,50 @@
+﻿@using Tirajii.Data
+@using Tirajii.Models.Trucker;
+@using Tirajii.Models.Company;
+@model OfferAddNEditViewModel
+<h1 class="text-center">@ViewBag.Title</h1>
+<hr />
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 offset-lg-3 col-lg-8 offset-xl-3 col-xl-6">
+            <form method="post">
+                <div class="mb-3">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="form-control" placeholder="Ex: Going on a polar adventure">
+                    <span asp-validation-for="Name" class="small text-danger"> </span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Description"></label>
+                    <input asp-for="Description" class="form-control" placeholder="Ex: this is a polar experience, suitable for adventureres etc.">
+                    <span asp-validation-for="Description" class="small text-danger"> </span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Payment"></label>
+                    <input asp-for="Payment" class="form-control" placeholder="How much $?">
+                    <span asp-validation-for="Payment" class="small text-danger"> </span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="DueDate">Due Date</label>
+                    <input type="date" asp-for="DueDate" class="form-control" placeholder="Ex: dd/mm/yyyy">
+                    <span asp-validation-for="DueDate" class="small text-danger"> </span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CategoryId">The offer's category:</label>
+                    <select asp-for="CategoryId" class="form-select">
+                        @foreach (var category in Model.Categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="d-grid d-md-block mt-3">
+                    <button class="btn btn-primary mt-3" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

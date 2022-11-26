@@ -23,6 +23,7 @@ namespace Tirajii.Controllers
             truckerService = _trService;
             notyf = _notyf;
         }
+
         [HttpGet]
         public async Task<IActionResult> Register()
         {
@@ -30,8 +31,10 @@ namespace Tirajii.Controllers
             {
                 TruckingCategories =  await truckerService.GetAllTruckingCategories()
             };
+            ViewBag.Title = "Register as a trucker";
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> Register(TruckerRegisterViewModel model)
         {
@@ -53,6 +56,7 @@ namespace Tirajii.Controllers
                 return View(model);
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
@@ -91,6 +95,7 @@ namespace Tirajii.Controllers
                 return View(model);
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> Offers(AllOffersViewModel model)
         {
@@ -107,6 +112,7 @@ namespace Tirajii.Controllers
             ViewBag.User = await truckerService.GetUserWithTrucker(User.Id());
             return View(model);
         }
+
         [HttpGet]
         public IActionResult TruckOffersAll(AllTruckOffersViewModel model)
         {
@@ -122,6 +128,7 @@ namespace Tirajii.Controllers
             model.TotalOffers = result.TotalOffers;
             return View(model);
         }
+
         [HttpGet]
         public async Task<IActionResult> AllCompanies(AllCompaniesViewModel model)
         {
@@ -138,6 +145,7 @@ namespace Tirajii.Controllers
             ViewBag.User = await truckerService.GetUserWithTrucker(User.Id());
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> ClaimOffer(int offerId)
         {
@@ -183,6 +191,7 @@ namespace Tirajii.Controllers
             }
             
         }
+
         [HttpGet]
         public async Task<IActionResult> OffersMine()
         {
@@ -191,6 +200,7 @@ namespace Tirajii.Controllers
             ViewBag.User = await truckerService.GetUserWithTrucker(User.Id());
             return View(offers);
         }
+
         [HttpGet]
         public async Task<IActionResult> OffersCompleted()
         {
@@ -208,6 +218,7 @@ namespace Tirajii.Controllers
             else notyf.Success($"Nice! You were rewarded {result.Xp} XP, keep it up!");
             return RedirectToAction("OffersMine", "Trucker");
         }
+
         [HttpPost]
         public async Task<IActionResult> FailOffer(int offerId)
         {

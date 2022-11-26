@@ -28,8 +28,35 @@
                 {
                     <h6 class="card-subtitle mb-2 text-muted">Is Bought: <img src="~/pictures/check-solid.svg" width="15" height="15" /></h6>
                 }
-                <p class="card-text">Description:</p>            
-                <p class="card-text">@item.Description</p>            
+                <p class="card-text">Description: @item.Description</p>
+                @if (!item.IsBought)
+                {
+                    <form method="get">
+                        <button asp-route-id="@item.Id" class="btn btn-outline-warning" asp-action="EditTruckOffer" asp-controller="Company">Edit</button>
+                    </form>
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            Delete
+                        </button>
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Important!</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        You are about to delete this offer. Proceed?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <form method="post">
+                                        <button type="submit" asp-route-id="@item.Id" class="btn btn-danger" asp-action="DeleteTruckOffer" asp-controller="Company">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                }
             </div>
         </div>
     }

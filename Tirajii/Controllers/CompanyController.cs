@@ -24,6 +24,7 @@ namespace Tirajii.Controllers
             notyf = _notyf;
             userService = _userService;
         }
+
         [HttpGet]
         public async Task<IActionResult> Register()
         {
@@ -31,8 +32,10 @@ namespace Tirajii.Controllers
             {
                 Categories = await companyService.GetAllCompanyCategories()
             };
+            ViewBag.Title = "Register your company";
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> Register(CompanyRegisterViewModel model)
         {
@@ -64,6 +67,7 @@ namespace Tirajii.Controllers
             };
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> RegisterATruck(TruckViewModel model)
         {
@@ -85,15 +89,18 @@ namespace Tirajii.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+
         [HttpGet]
         public IActionResult TruckOfferAdd(int id)
         {
-            var offer = new TruckOfferAddViewModel()
+            var offer = new TruckOfferAddNEditViewModel()
             {
-                truckId = id
+                TruckId = id
             };
+            ViewBag.Title = "Add a truck offer";
             return View(offer);
         }
+
         [HttpGet]
         public async Task<IActionResult> GetMyTrucks()
         {
@@ -101,11 +108,12 @@ namespace Tirajii.Controllers
             var trucks = await companyService.GetMyTrucksForOffer(userId);
             return View("CompanyTrucks", trucks);
         }
+
         [HttpPost]
-        public async Task<IActionResult> TruckOfferAdd(TruckOfferAddViewModel model, int truckId, int companyId)
+        public async Task<IActionResult> TruckOfferAdd(TruckOfferAddNEditViewModel model, int truckId, int companyId)
         {
-            model.truckId = truckId;
-            model.CompanyId = companyService.GetTruckById(truckId).Result.CompanyId;
+            model.TruckId = truckId;
+            model.CompanyId = companyId;
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -124,6 +132,7 @@ namespace Tirajii.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> OfferMine()
         {
@@ -140,6 +149,7 @@ namespace Tirajii.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+
         [HttpGet]
         public IActionResult TruckOfferMine()
         {
@@ -156,15 +166,18 @@ namespace Tirajii.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> OfferAdd()
         {
-            var model = new OfferAddViewModel()
+            var model = new OfferAddNEditViewModel()
             {
                 Categories = await companyService.GetAllOfferCategories()
             };
+            ViewBag.Title = "Add an offer";
             return View(model);
         }
+
         [HttpGet]
         public async Task<IActionResult> Rating()
         {
@@ -191,7 +204,7 @@ namespace Tirajii.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> OfferAdd(OfferAddViewModel model)
+        public async Task<IActionResult> OfferAdd(OfferAddNEditViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -225,6 +238,7 @@ namespace Tirajii.Controllers
             };
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> EditProfile(CompanyRegisterViewModel model)
         {
@@ -244,6 +258,134 @@ namespace Tirajii.Controllers
                 ModelState.AddModelError("", ex.Message);
                 notyf.Error(ex.Message);
                 return View(model);
+            }
+        }
+        
+        [HttpGet]
+        public IActionResult EditOffer(int id)
+        {
+            if (id == 0)
+            {
+                notyf.Error("Invalid offer!");
+                return RedirectToAction("OfferMine", "Company");
+            }
+            var offer = companyService.GetOfferById(id).Result;
+            var model = new OfferAddNEditViewModel
+            {
+                Description = offer.Description,
+                Name = offer.Name,
+                Payment = offer.Payment,
+                DueDate = offer.DueDate.ToString("d"),
+                CategoryId = offer.CategoryId,
+                Categories = companyService.GetAllOfferCategories().Result,
+                CompanyId = offer.CompanyId
+            };
+            return View(model);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> EditOffer(OfferAddNEditViewModel model, int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            try
+            {
+                await companyService.EditOffer(model, id);
+                notyf.Information("Successfully edited your offer!");
+                return RedirectToAction("OfferMine", "Company");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                notyf.Error(ex.Message);
+                return View(model);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult EditTruckOffer(int id)
+        {
+            if (id == 0)
+            {
+                notyf.Error("Invalid offer!");
+                return RedirectToAction("OfferMine", "Company");
+            }
+            var truckOffer = companyService.GetTruckOfferById(id).Result;
+            var model = new TruckOfferAddNEditViewModel
+            {
+                Name = truckOffer.Name,
+                CompanyId = truckOffer.CompanyId,
+                Cost = truckOffer.Cost,
+                Description = truckOffer.Description,
+                TruckId = truckOffer.TruckId,
+            };
+            return View(model);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> EditTruckOffer(TruckOfferAddNEditViewModel model, int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            try
+            {
+                await companyService.EditTruckOffer(model, id);
+                notyf.Information("Successfully edited your truck offer!");
+                return RedirectToAction("TruckOfferMine", "Company");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                notyf.Error(ex.Message);
+                return View(model);
+            }
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> DeleteOffer(int id)
+        {
+            if (id == 0)
+            {
+                notyf.Error("Invalid offer!");
+                return RedirectToAction("OfferMine", "Company");
+            }
+            try
+            {
+                await companyService.DeleteOffer(id);
+                notyf.Information("Successfully deleted your offer!");
+                return RedirectToAction("OfferMine", "Company");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                notyf.Error(ex.Message);
+                return RedirectToAction("Index", "Home");
+            }
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> DeleteTruckOffer(int id)
+        {
+            if (id == 0)
+            {
+                notyf.Error("Invalid offer!");
+                return RedirectToAction("OfferMine", "Company");
+            }
+            try
+            {
+                await companyService.DeleteTruckOffer(id);
+                notyf.Information("Successfully deleted your truck offer!");
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                notyf.Error(ex.Message);
+                return RedirectToAction("Index","Home");
             }
         }
     }
