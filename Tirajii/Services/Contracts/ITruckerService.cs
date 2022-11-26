@@ -44,5 +44,7 @@ namespace Tirajii.Services.Contracts
         Task<ExperienceModel> OfferSucceed(string userId, int offerId);
 
         Task<ExperienceModel> FailOffer(string userId, int offerId);
+
+        public Task<bool> Purchase(int truckId, string userId);
     }
 }

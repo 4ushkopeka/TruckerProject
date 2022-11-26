@@ -25,16 +25,6 @@ namespace Tirajii.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Purchase(int truckId)
-        {
-            var userId = this.User.Id();
-            var successfulPurchase = await userService.Purchase(truckId, userId);
-            if (!successfulPurchase) return BadRequest();
-            notyf.Success("You successfully purchased a Truck!");
-            return RedirectToAction("General", "Truck");
-        }
-
-        [Authorize]
         public async Task<IActionResult> ConnectWallet()
         {
             var userId = this.User.Id();
@@ -104,7 +94,7 @@ namespace Tirajii.Controllers
             var result = await userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction("Login", "User");
+                return RedirectToAction("Index", "Home");
             }
             foreach (var item in result.Errors)
             {

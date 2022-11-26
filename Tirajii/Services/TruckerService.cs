@@ -279,6 +279,29 @@ namespace Tirajii.Services
             };
         }
 
+        public async Task<bool> Purchase(int truckId, string userId)
+        {
+            var user = await GetUserWithTrucker(userId);
+            var wallet = await context.Wallets.FirstAsync(u => u.UserId == userId);
+            var offer = await context.TruckOffers.Include(x => x.Truck).FirstAsync(n => n.Id == truckId);
+            var company = await context.Companies.FirstAsync(u => u.Id == offer.CompanyId);
+            var ownerWallet = await context.Wallets.FirstAsync(w => w.UserId == company.OwnerId);
+
+            if (offer.Cost > wallet.Balance)
+            {
+                return false;
+            }
+
+            offer.Truck.OwnerId = userId;
+            offer.Truck.IsForSale = false;
+            ownerWallet.Balance += offer.Cost*1.35M;
+            offer.Truck.Owner = user;
+            user.Wallet.Balance -= offer.Cost;
+            user.Trucker.TruckId = truckId;
+
+            await context.SaveChangesAsync();
+            return true;
+        }
         public async Task EditTrucker(TruckerRegisterViewModel model, string userId)
         {
             var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);

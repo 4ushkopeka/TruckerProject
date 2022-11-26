@@ -126,6 +126,8 @@ namespace Tirajii.Controllers
             model.Offers = result.Offers;
             model.Categories = categories;
             model.TotalOffers = result.TotalOffers;
+
+            ViewBag.User = truckerService.GetUserWithTrucker(User.Id());
             return View(model);
         }
 
@@ -228,5 +230,17 @@ namespace Tirajii.Controllers
             else notyf.Error($"You failed the task and lost {result.Xp} XP, a bit disappointing...");
             return RedirectToAction("OffersMine", "Trucker");
         }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Purchase(int truckid)
+        {
+            var userId = this.User.Id();
+            var successfulPurchase = await truckerService.Purchase(truckid, userId);
+            if (!successfulPurchase) return BadRequest();
+            notyf.Success("You successfully purchased a Truck!");
+            return RedirectToAction("General", "Truck");
+        }
+
     }
 }

@@ -53,7 +53,42 @@
                     <p>Has Parktronic: <img src="~/pictures/check-solid.svg" width="17" height="17" /></p>
                 }
                 <form method="post">
-                    <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="BuyATruck" asp-controller="Trucker">Buy</button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        Buy
+                    </button>
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Buy this truck?</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                    @if (item.Name!=null)
+                                    {
+                                    <div class="modal-body">
+                                        Would you like to buy @item.Name?
+                                    </div>
+                                    }
+                                    else
+                                    {
+                                    <div class="modal-body">
+                                        Would you like to buy this rusty beast?
+                                    </div>
+                                    }
+                                    @if (ViewBag.User.Trucker.TruckId is not null)
+                                    {
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-outline-success" asp-route-truckid="@item.TruckId" asp-area="" asp-action="Purchase" asp-controller="Trucker">Buy</button>
+                                    </div>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="You already have a truck, you must sell it in order to buy this one">Buy</button>
+                                    }
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
