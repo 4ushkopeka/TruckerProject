@@ -31,47 +31,79 @@
                            </span class="align-middle">
                         }
                         <br />
-                        
                     </h2>
                     <hr />
                 </div>
                 @if (!Model.HasSpeakers)
                 {
                    <h4>Has Speakers: <img src="~/pictures/xmark-solid.svg" width="20" height="20" /> </h4>
+                   <h5 class="text-xl-end fw-bold mb-2">
+                           <span class="align-middle"> 
+                               Class: @ViewBag.Class
+                           </span>
+                    </h5>
                 }
                 else
                 {
                    <h4>Has Speakers: <img src="~/pictures/check-solid.svg" width="20" height="20" /></h4>
-                   <br />
+                   <h5 class="text-xl-end fw-bold mb-2">
+                           <span class="align-middle"> 
+                               Class: @ViewBag.Class
+                           </span>
+                    </h5>
                 }
                 @if (!Model.HasBluetooth)
                 {
                     <h4>Has Bluetooth: <img src="~/pictures/xmark-solid.svg" width="20" height="20" /> </h4>
-                    <br />
+                    <h5 class="text-xl-end fw-bold mb-2">
+                           <span class="align-middle"> 
+                               Reg. Number: @Model.RegistrationNumber
+                           </span>
+                    </h5>
                 }
                 else
                 {
                     <h4>Has Bluetooth: <img src="~/pictures/check-solid.svg" width="20" height="20" /></h4>
-                    <br />
+                    <h5 class="text-xl-end fw-bold mb-2">
+                           <span class="align-middle"> 
+                               Reg. Number: @Model.RegistrationNumber
+                           </span>
+                    </h5>
                 }
                 @if (!Model.HasCDPlayer)
                 {
                     <h4>Has CD player: <img src="~/pictures/xmark-solid.svg" width="20" height="20" /> </h4>
-                    <br />
+                    <h5 class="text-xl-end fw-bold mb-2">
+                           <span class="align-middle"> 
+                               Colour: @Model.Colour
+                           </span>
+                    </h5>
                 }
                 else
                 {
                     <h4>Has CD player: <img src="~/pictures/check-solid.svg" width="20" height="20" /></h4>
-                    <br />
+                    <h5 class="text-xl-end fw-bold mb-2">
+                           <span class="align-middle"> 
+                               Colour: @Model.Colour
+                           </span>
+                    </h5>
                 }
                 @if (!Model.HasInstaBrakes)
                 {
                     <h4>Has Instant brakes: <img src="~/pictures/xmark-solid.svg" width="20" height="20" /> </h4>
+                    <h5 class="text-xl-end fw-bold mb-2">
+                           <span class="text-white"> 
+                           </span>
+                    </h5>
                     <br />
                 }
                 else
                 {
                     <h4>Is Completed: <img src="~/pictures/check-solid.svg" width="20" height="20" /></h4>
+                    <h5 class="text-xl-end fw-bold mb-2">
+                           <span class="text-white"> 
+                           </span>
+                    </h5>
                     <br />
                 }
                 @if (!Model.HasParkTronic)
@@ -84,14 +116,18 @@
                     <h4>Has Parktronic: <img src="~/pictures/check-solid.svg" width="20" height="20" /></h4>
                     <br />
                 }
-                <br />
+                <br/>
+                <form method="get">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" asp-route-id="@Model.Id" asp-area="" asp-action="Upgrade" asp-controller="Truck">Upgrade</button>
+                        <br />
+                        <button class="btn btn-warning" asp-route-id="@Model.Id" asp-area="" asp-action="Edit" asp-controller="Truck">Edit</button>
+                        <br />
+                    </div>
+                </form>
                 <form method="post">
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary" asp-route-truckid="1" asp-area="" asp-action="Upgrade" asp-controller="Truck">Upgrade</button>
-                        <br />
-                        <button type="submit" class="btn btn-warning" asp-route-truckid="1" asp-area="" asp-action="Edit" asp-controller="Truck">Edit</button>
-                        <br />
-                        <button type="submit" class="btn btn-danger" asp-route-truckid="1" asp-area="" asp-action="Sell" asp-controller="Truck">Sell</button>
+                        <button type="submit" class="btn btn-danger" asp-area="" asp-action="Sell" asp-controller="Truck">Sell</button>
                     </div>
                 </form>
              </div>
@@ -104,3 +140,6 @@
 <br />
 <br />
 <center><h1><i><b>Disclaimer: Truck buyers are picky, so if you want to sell your beast successfully, try to keep it clean and functional.</b></i></h1></center>
+@section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+}
