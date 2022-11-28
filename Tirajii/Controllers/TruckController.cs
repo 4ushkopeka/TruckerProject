@@ -70,18 +70,30 @@ namespace Tirajii.Controllers
             var truck = await truckService.GetTruckByUserId(User.Id());
             var model = new TruckUpgradeViewModel
             {
-                HasBluetooth = truck.HasBluetooth,
-                HasCDPlayer = truck.HasCDPlayer,
-                HasInstaBrakes = truck.HasInstaBrakes,
-                HasParkTronic = truck.HasParkTronic,
-                HasSpeakers = truck.HasSpeakers
+                Cost = 0,
+                Upgrades = new Dictionary<string, bool>()
+                {
+                    { "Brakes", truck.HasInstaBrakes },
+                    { "Speakers", truck.HasSpeakers },
+                    { "Bluetooth", truck.HasBluetooth },
+                    { "CDPlayer", truck.HasCDPlayer },
+                    { "ParkTronic", truck.HasParkTronic }
+                },
+                Upgraded = new Dictionary<string, bool>()
+                {
+                    { "Brakes", false },
+                    { "Speakers", false },
+                    { "Bluetooth", false },
+                    { "CDPlayer", false },
+                    { "ParkTronic", false }
+                }
             };
 
-             return View(model);
+             return View(truckService.GenerateUpgrades(model));
         }
         
         [HttpPost]
-        public async Task<IActionResult> Upgrade(TruckUpgradeViewModel truck, int truckid, int cost)
+        public async Task<IActionResult> Upgrade(TruckUpgradeViewModel truck, int truckid)
         {
             return View();
         }

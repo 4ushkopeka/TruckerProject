@@ -49,5 +49,37 @@ namespace Tirajii.Services
         {
             throw new NotImplementedException();
         }
+
+        public TruckUpgradeViewModel GenerateUpgrades(TruckUpgradeViewModel truck)
+        {
+            var valuesForUpgrades = truck.Upgrades.Where(x => !x.Value).ToDictionary(x => x.Key, x => x.Value);
+            var numberOfPotentialUpgrades = valuesForUpgrades.Count;
+            var upgradeCount = 0;
+            if (numberOfPotentialUpgrades == 1) upgradeCount = 1;
+            else upgradeCount = new Random().Next(1, numberOfPotentialUpgrades);
+            return UpgradeCalculations(truck, valuesForUpgrades, upgradeCount);
+        }
+
+        private TruckUpgradeViewModel UpgradeCalculations(TruckUpgradeViewModel truckStats, Dictionary<string, bool> valuesForUpgrades, int maxUpgrades)
+        {
+            foreach (var item in valuesForUpgrades)
+            {
+                if (truckStats.Upgraded[item.Key]) continue;
+                var chance = new Random().Next(0, maxUpgrades+1);
+                if (chance == 0) 
+                { 
+                    truckStats.Upgrades[item.Key] = true; 
+                    maxUpgrades--;
+                    truckStats.Upgraded[item.Key] = true;
+                    if (item.Key == "ParkTronic") truckStats.Cost += new Random().Next(1670, 3001);
+                    else if (item.Key == "Speakers") truckStats.Cost += new Random().Next(800, 1801);
+                    else if (item.Key == "Bluetooth") truckStats.Cost += new Random().Next(500, 1001);
+                    else if (item.Key == "CDPlayer") truckStats.Cost += new Random().Next(300, 701);
+                    else if (item.Key == "Brakes") truckStats.Cost += new Random().Next(3000, 5001);
+                }
+                if (maxUpgrades == 0) break;
+            }
+            return truckStats;
+        }
     }
 }

@@ -1,6 +1,28 @@
 ﻿@using Tirajii.Data.Models
 @model Truck
-
+<style>
+      .meter { 
+        height: 5px;
+        position: relative;
+        background: #f3efe6;
+        overflow: hidden;
+    }
+    
+    .meter span {
+        display: block;
+        height: 100%;
+    }
+    
+    .progress {
+        background-color: #001194;
+        animation: progressBar 15s ease-in-out;
+        animation-fill-mode:both; 
+    }
+    
+    @@keyframes progressBar {
+      0% { width: 0; }
+      100% { width: 100%; }
+    } </style>
 <div class="container">
     <div class="row">
         <div class="col-md-5">
@@ -119,7 +141,36 @@
                 <br/>
                 <form method="get">
                     <div class="d-grid gap-2">
-                        <button class="btn btn-primary" asp-route-id="@Model.Id" asp-area="" asp-action="Upgrade" asp-controller="Truck">Upgrade</button>
+                        @if (Model.HasCDPlayer && Model.HasSpeakers && Model.HasBluetooth && Model.HasInstaBrakes && Model.HasParkTronic)
+                        {
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" disabled>
+                            Upgrade
+                        </button>
+                        }
+                        else
+                        {
+                        <button type="button" onclick="DisableFor10Seconds();HideFor10Seconds();" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            Upgrade
+                        </button>
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Hold on tightly while engineers upgrade your truck...</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="meter">
+                                            <span style="width:100%;"><span class="progress"></span></span>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <label id="su" class="align-content-lg-start">Upgrades are in place!</label>
+                                        <button id ="tryme" class="btn btn-primary" asp-route-id="@Model.Id" asp-area="" asp-action="Upgrade" asp-controller="Truck">View upgrades</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        }
                         <br />
                         <button class="btn btn-warning" asp-route-id="@Model.Id" asp-area="" asp-action="Edit" asp-controller="Truck">Edit</button>
                         <br />
@@ -140,6 +191,16 @@
 <br />
 <br />
 <center><h1><i><b>Disclaimer: Truck buyers are picky, so if you want to sell your beast successfully, try to keep it clean and functional.</b></i></h1></center>
+<script>
+    function DisableFor10Seconds() {
+        document.getElementById("tryme").disabled = true;
+        setTimeout(function () { document.getElementById("tryme").disabled = false; }, 15000);
+    }
+    function HideFor10Seconds() {
+        document.getElementById("su").hidden = true;
+        setTimeout(function () { document.getElementById("su").hidden = false; }, 15000);
+    }
+</script>
 @section Scripts {
         <partial name="_ValidationScriptsPartial" />
 }

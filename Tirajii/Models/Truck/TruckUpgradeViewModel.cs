@@ -4,19 +4,11 @@ namespace Tirajii.Models.Truck
 {
     public class TruckUpgradeViewModel
     {
-        [Required]
-        public bool HasSpeakers { get; set; }
+        public Dictionary<string, bool> Upgrades { get; set; } = new Dictionary<string, bool>();
 
-        [Required]
-        public bool HasBluetooth { get; set; }
+        public Dictionary<string, bool> Upgraded { get; set; } = new Dictionary<string, bool>();
 
-        [Required]
-        public bool HasCDPlayer { get; set; }
+        public decimal Cost { get; set; }
 
-        [Required]
-        public bool HasParkTronic { get; set; }
-
-        [Required]
-        public bool HasInstaBrakes { get; set; }
     }
 }
