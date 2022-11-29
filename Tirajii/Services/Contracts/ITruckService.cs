@@ -11,9 +11,11 @@ namespace Tirajii.Services.Contracts
 
         Task EditTruck(TruckViewModel truck, int truckid);
 
-        TruckUpgradeViewModel GenerateUpgrades(TruckUpgradeViewModel truck);
+        Task GenerateUpgrades(TruckUpgradeViewModel truck);
 
-        Task UpgradeTruck(TruckUpgradeViewModel truck, int truckid, int cost);
+        Task PayUpgrades(string userId);
+
+        Task<int> SellTruck(int truckid, string userId);
 
         Task<List<TruckClass>> GetAllClasses();
 

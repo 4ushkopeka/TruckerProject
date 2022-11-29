@@ -8,7 +8,7 @@ namespace Tirajii.Models.Truck
 
         public Dictionary<string, bool> Upgraded { get; set; } = new Dictionary<string, bool>();
 
-        public decimal Cost { get; set; }
+        public int TruckId { get; set; }
 
     }
 }

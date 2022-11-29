@@ -237,7 +237,11 @@ namespace Tirajii.Controllers
         {
             var userId = this.User.Id();
             var successfulPurchase = await truckerService.Purchase(truckid, userId);
-            if (!successfulPurchase) return BadRequest();
+            if (!successfulPurchase)
+            {
+                notyf.Error("Insufficient funds!");
+                return RedirectToAction("Index", "Home");
+            }
             notyf.Success("You successfully purchased a Truck!");
             return RedirectToAction("General", "Truck");
         }

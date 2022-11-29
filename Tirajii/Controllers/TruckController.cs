@@ -26,6 +26,11 @@ namespace Tirajii.Controllers
         public async Task<IActionResult> General()
         {
             var truck = await truckService.GetTruckByUserId(User.Id());
+            if (truck is null)
+            {
+                notyf.Error("You do not yet own a truck!");
+                return RedirectToAction("Index","Home");
+            }
             ViewBag.Class = truckService.GetClassById(truck.ClassId).Result.Name;
             return View(truck);
         }
@@ -64,44 +69,68 @@ namespace Tirajii.Controllers
             return RedirectToAction("General", "Truck");
         }
         
-        [HttpGet]
-        public async Task<IActionResult> Upgrade(int truckid)
+        [HttpPost]
+        public async Task<IActionResult> PayRetry()
         {
-            var truck = await truckService.GetTruckByUserId(User.Id());
-            var model = new TruckUpgradeViewModel
+            try
             {
-                Cost = 0,
+                await truckService.PayUpgrades(User.Id());
+                notyf.Success("Successful transaction!");
+                return RedirectToAction("Upgrade", "Truck");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                notyf.Error(ex.Message);
+                return RedirectToAction("General", "Truck");
+            }
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> Upgrade()
+        {
+            try
+            {
+                await truckService.PayUpgrades(User.Id());
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                notyf.Error(ex.Message);
+                return RedirectToAction("General", "Truck");
+            }
+            var truck = await truckService.GetTruckByUserId(User.Id());
+            var model = new TruckUpgradeViewModel()
+            {
                 Upgrades = new Dictionary<string, bool>()
                 {
                     { "Brakes", truck.HasInstaBrakes },
-                    { "Speakers", truck.HasSpeakers },
                     { "Bluetooth", truck.HasBluetooth },
+                    { "Speakers", truck.HasSpeakers },
                     { "CDPlayer", truck.HasCDPlayer },
                     { "ParkTronic", truck.HasParkTronic }
                 },
                 Upgraded = new Dictionary<string, bool>()
                 {
                     { "Brakes", false },
-                    { "Speakers", false },
                     { "Bluetooth", false },
+                    { "Speakers", false },
                     { "CDPlayer", false },
                     { "ParkTronic", false }
-                }
+                },
+                TruckId = truck.Id
             };
-
-             return View(truckService.GenerateUpgrades(model));
-        }
-        
-        [HttpPost]
-        public async Task<IActionResult> Upgrade(TruckUpgradeViewModel truck, int truckid)
-        {
-            return View();
+            await truckService.GenerateUpgrades(model);
+            return RedirectToAction("General", "Truck");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Sell(int truckid)
+        public async Task<IActionResult> Sell()
         {
-            return View();
+            var truck = await truckService.GetTruckByUserId(User.Id());
+            var gains = await truckService.SellTruck(truck.Id, User.Id());
+            notyf.Success($"You successfully sold your truck for {gains:f2}$!");
+            return RedirectToAction("Index","Home");
         }
     }
 }

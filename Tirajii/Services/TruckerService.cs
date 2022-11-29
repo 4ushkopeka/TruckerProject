@@ -72,7 +72,7 @@ namespace Tirajii.Services
             TruckOfferSorting sorting = TruckOfferSorting.Cost,
             int currentPage = 1)
         {
-            var offers = this.context.TruckOffers.Include(x => x.Truck).Include(x => x.Company).Where(c => true);
+            var offers = this.context.TruckOffers.Include(x => x.Truck).Include(x => x.Company).Where(c => true && !c.IsBought);
 
             if (!string.IsNullOrWhiteSpace(category))
             {
@@ -298,7 +298,7 @@ namespace Tirajii.Services
             offer.Truck.Owner = user;
             wallet.Balance -= offer.Cost;
             user.Trucker.TruckId = truckId;
-
+            offer.IsBought = true;
             await context.SaveChangesAsync();
             return true;
         }

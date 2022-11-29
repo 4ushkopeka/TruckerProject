@@ -6,8 +6,12 @@
 <hr />
 <br />
 <div class="text-center row">
+    @{
+        var a = 0;
+    }
     @foreach (var item in Model)
     {
+
         <div class="card" style="width: 18rem;">
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
@@ -71,10 +75,37 @@
                                 </div>
                             </div>
                     }
+                    else
+                    {
+                        a++;
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#@a" aria-expanded="false" aria-controls="@a">
+                            View Trucker
+                          </button>
+                        <div class="collapse" id="@a">
+                          <div class="card card-body">
+                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+                                <div class="card">
+                                    <img src="@item.Trucker.ProfilePicture" alt="John" style="width:100%">
+                                    <h1>@item.Trucker.Name</h1>
+                                    <p class="title">@item.Trucker.Description</p>
+                                    <p>@item.Trucker.PhoneNumber</p>
+                                    <p>@item.Trucker.Email</p>
+                                    <a href="#"><i class="fa fa-dribbble"></i></a>
+                                    <a href="#"><i class="fa fa-twitter"></i></a>
+                                    <a href="#"><i class="fa fa-linkedin"></i></a>
+                                    <a href="#"><i class="fa fa-facebook"></i></a>
+                                </div>
+                          </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     }
+    <br />
+    <br />
+    <br />
     <form>
         <button type="submit" class="btn btn-outline-primary" asp-area="" asp-action="OfferAdd" asp-controller="Company">Add more Offers</button>
     </form>

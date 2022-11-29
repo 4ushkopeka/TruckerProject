@@ -121,7 +121,7 @@
                 }
                 else
                 {
-                    <h4>Is Completed: <img src="~/pictures/check-solid.svg" width="20" height="20" /></h4>
+                    <h4>Has Instant brakes: <img src="~/pictures/check-solid.svg" width="20" height="20" /></h4>
                     <h5 class="text-xl-end fw-bold mb-2">
                            <span class="text-white"> 
                            </span>
@@ -139,7 +139,6 @@
                     <br />
                 }
                 <br/>
-                <form method="get">
                     <div class="d-grid gap-2">
                         @if (Model.HasCDPlayer && Model.HasSpeakers && Model.HasBluetooth && Model.HasInstaBrakes && Model.HasParkTronic)
                         {
@@ -149,14 +148,14 @@
                         }
                         else
                         {
-                        <button type="button" onclick="DisableFor10Seconds();HideFor10Seconds();" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        <button type="button" onclick="DisableFor10Seconds();HideFor10Seconds();" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
                             Upgrade
                         </button>
-                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="staticBackdropLabel">Hold on tightly while engineers upgrade your truck...</h5>
+                                        <h5 class="modal-title" id="staticBackdropLabel1">Hold on tightly while engineers upgrade your truck...</h5>
                                     </div>
                                     <div class="modal-body">
                                         <div class="meter">
@@ -165,20 +164,44 @@
                                     </div>
                                     <div class="modal-footer">
                                         <label id="su" class="align-content-lg-start">Upgrades are in place!</label>
-                                        <button id ="tryme" class="btn btn-primary" asp-route-id="@Model.Id" asp-area="" asp-action="Upgrade" asp-controller="Truck">View upgrades</button>
+                                        <form method="post">
+                                            <button id ="tryme" class="btn btn-primary" asp-route-id="@Model.Id" asp-area="" asp-action="Upgrade" asp-controller="Truck">Pay and upgrade for 6000 <img src="~/pictures/coin.png" width="30" height="30"/> ?</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         }
                         <br />
-                        <button class="btn btn-warning" asp-route-id="@Model.Id" asp-area="" asp-action="Edit" asp-controller="Truck">Edit</button>
-                        <br />
+                        <form method="get">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-warning" asp-route-id="@Model.Id" asp-area="" asp-action="Edit" asp-controller="Truck">Edit</button>
+                                <br />
+                            </div>
+                        </form>
                     </div>
-                </form>
-                <form method="post">
+                    <form method="post">
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-danger" asp-area="" asp-action="Sell" asp-controller="Truck">Sell</button>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                          Sell
+                        </button>
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Are you sure?</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                You are about to sell your truck. Its price will be determined by our experts, and will be sold to e foreigner. Proceed?
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-danger" asp-area="" asp-action="Sell" asp-controller="Truck">Sell</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                     </div>
                 </form>
              </div>

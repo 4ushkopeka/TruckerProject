@@ -94,7 +94,11 @@ namespace Tirajii.Controllers
             var result = await userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction("Index", "Home");
+                var signed = await signManager.PasswordSignInAsync(user, model.Password, false, false);
+                if (signed.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
             foreach (var item in result.Errors)
             {
