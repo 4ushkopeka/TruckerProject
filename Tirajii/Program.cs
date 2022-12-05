@@ -34,6 +34,7 @@ builder.Services.AddNotyf(config => { config.DurationInSeconds = 5; config.IsDis
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/User/Login";
+    options.LogoutPath = "/User/Logout";
 });
 
 var app = builder.Build();
@@ -62,6 +63,9 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(
+   name: "areas",
+   pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
 app.Run();

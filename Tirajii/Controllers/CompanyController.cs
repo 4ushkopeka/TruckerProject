@@ -1,20 +1,17 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Tirajii.Data.Models;
 using Tirajii.Models.Company;
-using Tirajii.Models.Trucker;
 using Tirajii.Services.Contracts;
 using Tirajii.Infrastructure.Extensions;
-using Tirajii.Services;
+using Ganss.Xss;
 
 namespace Tirajii.Controllers
 {
     [Authorize]
     public class CompanyController : Controller
     {
+        private HtmlSanitizer sanitizer = new HtmlSanitizer();
         private readonly ICompanyService companyService;
         private readonly INotyfService notyf;
         private readonly IUserService userService;
@@ -46,6 +43,7 @@ namespace Tirajii.Controllers
             try
             {
                 var userId = this.User.Id();
+                model.Picture = sanitizer.Sanitize(model.Picture);
                 await companyService.RegisterCompany(model, userId);
                 notyf.Information("Welcome!");
                 return RedirectToAction("Index", "Home");
@@ -78,6 +76,7 @@ namespace Tirajii.Controllers
             try
             {
                 var userId = this.User.Id();
+                model.Picture = sanitizer.Sanitize(model.Picture);
                 await companyService.RegisterTruck(model, userId);
                 notyf.Success("Successfully registered a truck!");
                 return RedirectToAction("Index", "Home");
@@ -249,6 +248,7 @@ namespace Tirajii.Controllers
             try
             {
                 var userId = this.User.Id();
+                model.Picture = sanitizer.Sanitize(model.Picture);
                 await companyService.EditCompany(model, userId);
                 notyf.Information("Successfully edited your profile");
                 return RedirectToAction("Index", "Home");

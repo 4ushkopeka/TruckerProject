@@ -1,21 +1,17 @@
-﻿using AspNetCore;
-using AspNetCoreHero.ToastNotification.Abstractions;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Tirajii.Data.Models;
 using Tirajii.Infrastructure.Extensions;
 using Tirajii.Models.Trucker;
-using Tirajii.Services;
 using Tirajii.Services.Contracts;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Tirajii.Controllers
 {
     [Authorize]
     public class TruckerController : Controller
     {
+        private HtmlSanitizer sanitizer= new HtmlSanitizer();
         private readonly ITruckerService truckerService;
         private readonly INotyfService notyf;
         public TruckerController(ITruckerService _trService, INotyfService _notyf)
@@ -45,6 +41,7 @@ namespace Tirajii.Controllers
             try
             {
                 var userId = this.User.Id();
+                model.Picture = sanitizer.Sanitize(model.Picture is not null ? model.Picture : "");
                 await truckerService.RegisterTrucker(model, userId);
                 notyf.Information("Welcome");
                 return RedirectToAction("Index", "Home");
@@ -83,6 +80,7 @@ namespace Tirajii.Controllers
             }
             try
             {
+                model.Picture = sanitizer.Sanitize(model.Picture is not null ? model.Picture : "");
                 var userId = this.User.Id();
                 await truckerService.EditTrucker(model, userId);
                 notyf.Information("Successfully edited your profile");
