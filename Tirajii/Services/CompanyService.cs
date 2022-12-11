@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Ganss.Xss;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using Tirajii.Data;
 using Tirajii.Data.Models;
@@ -11,10 +12,12 @@ namespace Tirajii.Services
     public class CompanyService : ICompanyService
     {
         private readonly TruckersDbContext context;
+        private readonly HtmlSanitizer sanitizer;
 
-        public CompanyService(TruckersDbContext context)
+        public CompanyService(TruckersDbContext context, HtmlSanitizer htmlSanitizer)
         {
             this.context = context;
+            this.sanitizer = htmlSanitizer;
         }
 
         public async Task AddOffer(OfferAddNEditViewModel model, string userId)
@@ -27,7 +30,8 @@ namespace Tirajii.Services
             {
                 throw new ArgumentException("Invalid date format!");
             }
-            
+
+            model = SanitizeOffer(model);
             Offer offer = new Offer()
             {
                 DueDate = BDayval,
@@ -36,7 +40,7 @@ namespace Tirajii.Services
                 Description = model.Description,
                 Payment = model.Payment,
                 CompanyId = companyId,
-                IsApproved = true
+                IsApproved = false
             };
            
             await context.Offers.AddAsync(offer);
@@ -61,7 +65,8 @@ namespace Tirajii.Services
         public async Task RegisterCompany(CompanyRegisterViewModel model, string userId)
         {
             var user = await context.Users.FirstAsync(x => x.Id == userId);
-            
+            model = SanitizeCompany(model);
+
             Company company = new Company()
             {
                 Name = model.Name,
@@ -82,7 +87,8 @@ namespace Tirajii.Services
         public async Task RegisterTruck(TruckViewModel model, string userId)
         {
             var user = context.Users.Include(x => x.Company).First(x => x.Id == userId);
-            
+
+            model = SanitizeTruck(model);
             Truck truck = new Truck()
             {
                 Name = model.Name,
@@ -106,7 +112,8 @@ namespace Tirajii.Services
         {
             var user = context.Users.Include(x => x.Company).First(x => x.Id == userId);
             var truck = await this.GetTruckById(model.TruckId);
-            
+
+            model = SanitizeTruckOffer(model);
             TruckOffer offer = new TruckOffer()
             {
                 Company = user.Company,
@@ -114,7 +121,7 @@ namespace Tirajii.Services
                 Cost = model.Cost,
                 Truck = truck,
                 Name = model.Name,
-                IsApproved = true,
+                IsApproved = false,
                 CompanyId = (int)model.CompanyId
             };
             truck.IsForSale = true;
@@ -178,7 +185,7 @@ namespace Tirajii.Services
         {
             var user = await context.Users.Include(x => x.Company).FirstAsync(x => x.Id == userId);
             var company = user.Company;
-
+            model = SanitizeCompany(model);
             company.Picture = model.Picture;
             company.Name = model.Name;
             
@@ -200,6 +207,7 @@ namespace Tirajii.Services
                 throw new ArgumentException("Invalid date format!");
             }
             
+            model = SanitizeOffer(model);   
             offer.Description = model.Description;
             offer.DueDate = BDayval;
             offer.CategoryId = model.CategoryId;
@@ -212,7 +220,8 @@ namespace Tirajii.Services
         public async Task EditTruckOffer(TruckOfferAddNEditViewModel model, int truckOfferId)
         {
             var offer = await context.TruckOffers.FirstAsync(x => x.Id == truckOfferId);
-            
+
+            model = SanitizeTruckOffer(model);
             offer.Description = model.Description;
             offer.Name = model.Name;
             offer.Cost = model.Cost;
@@ -245,6 +254,60 @@ namespace Tirajii.Services
            
             context.Remove(offer);
             await context.SaveChangesAsync();
+        }
+
+        public async Task<List<Offer>> AllOffers()
+        {
+           return await context.Offers.Include(x => x.Category).ToListAsync();
+        }
+
+        public async Task<List<TruckOffer>> AllTruckOffers()
+        {
+            return await context.TruckOffers.Include(x => x.Company).ToListAsync();
+        }
+
+        public async Task ChangeOfferVisibility(int id)
+        {
+            var offer = await context.Offers.FirstAsync(x => x.Id == id);
+            offer.IsApproved = !offer.IsApproved;
+            await context.SaveChangesAsync();
+        }
+
+        public async Task ChangeTruckOfferVisibility(int id)
+        {
+            var offer = await context.TruckOffers.FirstAsync(x => x.Id == id);
+            offer.IsApproved = !offer.IsApproved;
+            await context.SaveChangesAsync();
+        }
+
+        public CompanyRegisterViewModel SanitizeCompany(CompanyRegisterViewModel model)
+        {
+            model.Name = sanitizer.Sanitize(model.Name);
+            model.Picture = sanitizer.Sanitize(model.Picture);
+            return model;
+        }
+
+        public OfferAddNEditViewModel SanitizeOffer(OfferAddNEditViewModel model)
+        {
+            model.Name = sanitizer.Sanitize(model.Name);
+            model.Description = sanitizer.Sanitize(model.Description);
+            return model;
+        }
+
+        public TruckOfferAddNEditViewModel SanitizeTruckOffer(TruckOfferAddNEditViewModel model)
+        {
+            model.Name = sanitizer.Sanitize(model.Name);
+            model.Description = sanitizer.Sanitize(model.Description);
+            return model;
+        }
+
+        public TruckViewModel SanitizeTruck(TruckViewModel model)
+        {
+            model.Name = sanitizer.Sanitize(model.Name is null ? "" : model.Name);
+            model.Picture = sanitizer.Sanitize(model.Picture);
+            model.RegistrationNumber = sanitizer.Sanitize(model.RegistrationNumber);
+            model.Colour = sanitizer.Sanitize(model.Colour);
+            return model;
         }
     }
 }

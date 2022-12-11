@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow.CopyAnalysis;
+﻿using Ganss.Xss;
+using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow.CopyAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Globalization;
@@ -15,10 +16,11 @@ namespace Tirajii.Services
     public class TruckerService : ITruckerService
     {
         private readonly TruckersDbContext context;
-
-        public TruckerService(TruckersDbContext context)
+        private readonly HtmlSanitizer sanitizer;
+        public TruckerService(TruckersDbContext context, HtmlSanitizer htmlSanitizer)
         {
             this.context = context;
+            this.sanitizer = htmlSanitizer;
         }
 
         public async Task<List<TruckingCategory>> GetAllTruckingCategories()
@@ -36,7 +38,7 @@ namespace Tirajii.Services
             CollectionSorting sorting = CollectionSorting.DueDate,
             int currentPage = 1)
         {
-            var offers = this.context.Offers.Where(c => !c.IsTaken);
+            var offers = this.context.Offers.Where(c => !c.IsTaken && c.IsApproved);
 
             if (!string.IsNullOrWhiteSpace(category))
             {
@@ -72,7 +74,7 @@ namespace Tirajii.Services
             TruckOfferSorting sorting = TruckOfferSorting.Cost,
             int currentPage = 1)
         {
-            var offers = this.context.TruckOffers.Include(x => x.Truck).Include(x => x.Company).Where(c => true && !c.IsBought);
+            var offers = this.context.TruckOffers.Include(x => x.Truck).Include(x => x.Company).Where(c => c.IsApproved && !c.IsBought);
 
             if (!string.IsNullOrWhiteSpace(category))
             {
@@ -129,7 +131,8 @@ namespace Tirajii.Services
         public async Task RegisterTrucker(TruckerRegisterViewModel model, string userId)
         {
             var user = context.Users.First(x => x.Id == userId);
-            
+
+            model = SanitizeTrucker(model);
             Trucker trucker = new Trucker()
             {
                 Name = model.FullName,
@@ -307,6 +310,7 @@ namespace Tirajii.Services
             var user = await context.Users.Include(x => x.Trucker).FirstAsync(x => x.Id == userId);
             var trucker = user.Trucker;
 
+            model = SanitizeTrucker(model);
             trucker.PhoneNumber = model.PhoneNumber;
             trucker.Description = model.Description;
             trucker.Email = model.Email;
@@ -315,6 +319,16 @@ namespace Tirajii.Services
             trucker.PhoneNumber = model.PhoneNumber;
 
             await context.SaveChangesAsync();
+        }
+
+        public TruckerRegisterViewModel SanitizeTrucker(TruckerRegisterViewModel model)
+        {
+            model.Picture = sanitizer.Sanitize(model.Picture is null ? "" : model.Picture);
+            model.PhoneNumber = sanitizer.Sanitize(model.PhoneNumber);
+            model.Description = sanitizer.Sanitize(model.Description);
+            model.FullName = sanitizer.Sanitize(model.FullName);
+            
+            return model;
         }
     }
 }

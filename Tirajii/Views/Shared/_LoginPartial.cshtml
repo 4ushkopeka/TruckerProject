@@ -20,15 +20,19 @@
     {
         var userId = User.Id();
         var _user = await UserManager.FindByIdAsync(userId);
-        //var userIsAdmin = User.IsAdmin();
-
         <li class="nav-item dropstart" style="width: 60px;">
             <a class="nav-link dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                 <img src="~/pictures/account.png" alt="" width="40" height="40">
             </a>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li><a class="dropdown-item fw-bold" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Manage Account</a></li>
-                @if (_user.IsTrucker)
+                @if (User.IsAdmin())
+                {
+                    <li class="nav-item">
+                        <a class="dropdown-item fw-bold" asp-area="Admin" asp-controller="OfferAdministration" asp-action="OffersAll">Administration</a>
+                    </li>
+                }
+                else if(_user.IsTrucker)
                 {
                     <form method="get">
                          <li><a class="dropdown-item fw-bold" asp-area="" asp-action="General" asp-controller="Truck">Configure truck</a></li>
@@ -56,15 +60,15 @@
                 else
                 {
                     <form method="get">
-                    <li><a class="dropdown-item fw-bold" asp-area="" asp-action="Register" asp-controller="Company">Register a company</a></li>
-                    <li><a class="dropdown-item fw-bold" asp-area="" asp-action="Register" asp-controller="Trucker">Become a trucker</a></li>
+                        <li><a class="dropdown-item fw-bold" asp-area="" asp-action="Register" asp-controller="Company">Register a company</a></li>
+                        <li><a class="dropdown-item fw-bold" asp-area="" asp-action="Register" asp-controller="Trucker">Become a trucker</a></li>
                     </form>                   
                 }
             </ul>
         </li>
 
         <li class="nav-item mt-1 ml-1" style="width: 45px;">
-            <form class="form-inline" asp-action="Logout" asp-controller="User">
+            <form class="form-inline" asp-area="" asp-action="Logout" asp-controller="User">
                 <button type="submit" class="nav-link btn btn-link text-dark">
                     <img src="~/pictures/exit.png" alt="" width="30" height="30">
                 </button>
@@ -84,7 +88,7 @@
 
 
     
-@if (SignInManager.IsSignedIn(User)) //&& !User.IsAdmin())
+@if (SignInManager.IsSignedIn(User) && !User.IsAdmin())
 {
     var user = await UserManager.FindByIdAsync(User.Id());
     if (user.IsTrucker || user.IsOfferCompanyOwner || user.IsTruckerCompanyOwner)

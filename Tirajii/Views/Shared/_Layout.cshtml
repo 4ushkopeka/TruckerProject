@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Tirajii.Data.Models
+@using Tirajii.Infrastructure.Extensions
 <!DOCTYPE html>
 @inject SignInManager<User> SignInManager;
 @inject UserManager<User> UserManager;
@@ -26,6 +27,12 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             var user = UserManager.FindByNameAsync(User.Identity.Name);
+                            if (User.IsAdmin())
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="OfferAdministration" asp-action="OffersAll">Imagine being an admin here...</a>
+                                </li>
+                            }
                             if (!user.Result.IsTrucker && !user.Result.IsTruckerCompanyOwner && !user.Result.IsOfferCompanyOwner)
                             {
                             }
@@ -51,6 +58,9 @@
                                             <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="TruckOfferMine">My Offers</a>
                                         </li>
                                         <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Trucker" asp-action="AllCompanies">All Companies</a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="TrucksMine">My Trucks</a>
                                         </li>
                                     }
@@ -64,9 +74,6 @@
                                         </li>
                                     }
                                 }
-                            }
-                            else
-                            {
                             }
                         }
                     </ul>

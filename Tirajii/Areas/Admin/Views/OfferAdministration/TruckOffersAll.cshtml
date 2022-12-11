@@ -1,0 +1,67 @@
+﻿@using Tirajii.Data.Models
+@using Tirajii.Infrastructure.Extensions
+@model IEnumerable<TruckOffer>
+
+@{
+    ViewBag.Title = "Admnistration";
+}
+
+<h1>All Truck Offers</h1>
+
+<table class="table table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Category</th>
+            <th scope="col">Approved</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var offer in Model)
+        {
+            <tr>
+                <td scope="col">@offer.Id</td>
+                <td scope="col">@offer.Name</td>
+                <td scope="col">@offer.Company.Name</td>
+                <td scope="col">@(offer.IsApproved ? "Yes" : "No")</td>
+                <td scope="col">
+                    <a class="btn btn-danger rounded-end float-end ms-3" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        Delete
+                    </a>
+
+                    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-start">
+                                    Are you sure you want to delete this Offer?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+                                    <a asp-area="" asp-controller="Company" asp-action="Delete" asp-route-id="@offer.Id" class="btn btn-primary">Yes</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a asp-area="" asp-controller="Company" asp-action="Edit" asp-route-id="@offer.Id" class="btn btn-warning text-white float-end ms-3">Edit</a>
+                    <a asp-area="Admin" asp-controller="OfferAdministration" asp-action="ChangeTruckOfferVisibility" asp-route-id="@offer.Id" class="btn btn-info float-end ms-3 text-white">@(offer.IsApproved ? "Hide" : "Approve")</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+<br />
+<br />
+<center>
+<form method="get">
+    <button type="submit" class="btn btn-outline-secondary" asp-area="Admin" asp-action="OffersAll" asp-controller="OfferAdministration">
+        Manage Offers
+    </button>
+</form>
+</center>

@@ -57,7 +57,15 @@
 @if (SignInManager.IsSignedIn(User))
 {
     var user = UserManager.FindByIdAsync(User.Id());
-    if (!user.Result.IsTrucker && !user.Result.IsTruckerCompanyOwner && !user.Result.IsOfferCompanyOwner)
+    if (User.IsAdmin())
+    {
+        <form method="get">
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-outline-secondary" asp-area="Admin" asp-action="OffersAll" asp-controller="OfferAdministration">Abuse your rights</button>
+            </div>
+        </form>
+    }
+    else if (!user.Result.IsTrucker && !user.Result.IsTruckerCompanyOwner && !user.Result.IsOfferCompanyOwner)
     {
         <h4 class="text-center">What are you waiting for?</h4>
         <h4 class="text-center">Become a trucker or register your own company!</h4>

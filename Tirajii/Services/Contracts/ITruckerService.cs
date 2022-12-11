@@ -46,5 +46,7 @@ namespace Tirajii.Services.Contracts
         Task<ExperienceModel> FailOffer(string userId, int offerId);
 
         public Task<bool> Purchase(int truckId, string userId);
+
+        TruckerRegisterViewModel SanitizeTrucker(TruckerRegisterViewModel model);
     }
 }

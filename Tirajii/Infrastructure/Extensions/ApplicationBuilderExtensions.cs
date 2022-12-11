@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Tirajii.Data;
 using Tirajii.Data.Models;
@@ -16,8 +17,8 @@ namespace Tirajii.Infrastructure.Extensions
             MigrateDatabase(services);
 
             SeedCategories(services);
-            //SeedAdministrator(services);
-
+            SeedAdministrator(services);
+            SeedRoles(services);
             return app;
         }
 
@@ -61,42 +62,66 @@ namespace Tirajii.Infrastructure.Extensions
             data.SaveChanges();
         }
 
-        //private static void SeedAdministrator(
-        //    IServiceProvider services)
-        //{
-        //    var userManager = services.GetRequiredService<UserManager<User>>();
-        //    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        private static void SeedAdministrator(
+            IServiceProvider services)
+        {
+            var userManager = services.GetRequiredService<UserManager<User>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-        //    Task.Run(async () =>
-        //    {
-        //        if (await roleManager.RoleExistsAsync(AdministratorRoleName))
-        //        {
-        //            return;
-        //        }
+            Task.Run(async () =>
+            {
+                if (await roleManager.RoleExistsAsync("Administrator"))
+                {
+                    return;
+                }
 
-        //        var role = new IdentityRole { Name = AdministratorRoleName };
+                var role = new IdentityRole { Name = "Administrator" };
 
-        //        await roleManager.CreateAsync(role);
+                await roleManager.CreateAsync(role);
 
-        //        const string adminEmail = "admin@bs.com";
-        //        const string adminPassword = "admin69";
+                const string adminEmail = "admin@bs.com";
+                const string adminUserName = "Admin404";
+                const string adminPassword = "Admin69!";
 
-        //        var user = new User
-        //        {
-        //            Email = adminEmail,
-        //            UserName = adminEmail,
-        //            FullName = "Admin",
-        //            HasWallet = false,
-        //        };
+                var user = new User
+                {
+                    Email = adminEmail,
+                    UserName = adminUserName,
+                    IsOfferCompanyOwner = false,
+                    IsTrucker = false,
+                    IsTruckerCompanyOwner = false,
+                    HasWallet = false,
+                };
 
-        //        await userManager.CreateAsync(user, adminPassword);
+                var result = userManager.CreateAsync(user, adminPassword).Result;
 
-        //        await userManager.AddToRoleAsync(user, role.Name);
-        //    })
-        //        .GetAwaiter()
-        //        .GetResult();
+                if (result.Succeeded) await userManager.AddToRoleAsync(user, role.Name);
+            })
+                .GetAwaiter()
+                .GetResult();
+        } 
+        private static void SeedRoles(
+            IServiceProvider services)
+        {
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
+            Task.Run(async () =>
+            {
+                if (await roleManager.RoleExistsAsync("Trucker"))
+                {
+                    return;
+                }
 
-        //}
+                var tRole = new IdentityRole { Name = "Trucker" };
+                var tcRole = new IdentityRole { Name = "TruckCompany" };
+                var cRole = new IdentityRole { Name = "OfferCompany" };
+
+                await roleManager.CreateAsync(tRole);
+                await roleManager.CreateAsync(tcRole);
+                await roleManager.CreateAsync(cRole);
+            })
+                .GetAwaiter()
+                .GetResult();
+        }
     }
 }

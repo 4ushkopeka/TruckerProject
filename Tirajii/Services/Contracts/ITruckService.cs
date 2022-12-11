@@ -20,5 +20,7 @@ namespace Tirajii.Services.Contracts
         Task<List<TruckClass>> GetAllClasses();
 
         Task<TruckClass> GetClassById(int id);
+
+        TruckViewModel SanitizeTruck(TruckViewModel model);
     }
 }

@@ -21,7 +21,5 @@ namespace Tirajii.Models.Company
 
         [Required]
         public int TruckId { get; set; }
-
-        public int? truckOfferId { get; set; }
     }
 }

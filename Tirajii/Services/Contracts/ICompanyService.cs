@@ -47,5 +47,21 @@ namespace Tirajii.Services.Contracts
         Task DeleteTruckOffer(int truckOfferId);
 
         Task DeleteOffer(int offerId);
+
+        Task<List<Offer>> AllOffers();
+
+        Task<List<TruckOffer>> AllTruckOffers();
+
+        Task ChangeOfferVisibility(int id);
+
+        Task ChangeTruckOfferVisibility(int id);
+
+        CompanyRegisterViewModel SanitizeCompany(CompanyRegisterViewModel model);
+
+        OfferAddNEditViewModel SanitizeOffer(OfferAddNEditViewModel model);
+
+        TruckOfferAddNEditViewModel SanitizeTruckOffer(TruckOfferAddNEditViewModel model);
+
+        TruckViewModel SanitizeTruck(TruckViewModel model);
     }
 }

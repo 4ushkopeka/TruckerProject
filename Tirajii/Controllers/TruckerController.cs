@@ -1,7 +1,9 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Ganss.Xss;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Tirajii.Data.Models;
 using Tirajii.Infrastructure.Extensions;
 using Tirajii.Models.Trucker;
 using Tirajii.Services.Contracts;
@@ -11,13 +13,15 @@ namespace Tirajii.Controllers
     [Authorize]
     public class TruckerController : Controller
     {
-        private HtmlSanitizer sanitizer= new HtmlSanitizer();
+        private readonly HtmlSanitizer sanitizer = new();
         private readonly ITruckerService truckerService;
         private readonly INotyfService notyf;
-        public TruckerController(ITruckerService _trService, INotyfService _notyf)
+        private readonly UserManager<User> manager;
+        public TruckerController(ITruckerService _trService, INotyfService _notyf, UserManager<User> manager)
         {
             truckerService = _trService;
             notyf = _notyf;
+            this.manager = manager;
         }
 
         [HttpGet]
@@ -44,6 +48,7 @@ namespace Tirajii.Controllers
                 model.Picture = sanitizer.Sanitize(model.Picture is not null ? model.Picture : "");
                 await truckerService.RegisterTrucker(model, userId);
                 notyf.Information("Welcome");
+                await manager.AddToRoleAsync(await truckerService.GetUserWithTrucker(userId), "Trucker");
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
@@ -54,6 +59,7 @@ namespace Tirajii.Controllers
             }
         }
 
+        [Authorize(Roles = "Trucker")]
         [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
@@ -71,6 +77,7 @@ namespace Tirajii.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Trucker")]
         [HttpPost]
         public async Task<IActionResult> EditProfile(TruckerRegisterViewModel model)
         {
@@ -94,6 +101,7 @@ namespace Tirajii.Controllers
             }
         }
 
+        [Authorize(Roles = "Trucker")]
         [HttpGet]
         public async Task<IActionResult> Offers(AllOffersViewModel model)
         {
@@ -111,6 +119,7 @@ namespace Tirajii.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Trucker")]
         [HttpGet]
         public IActionResult TruckOffersAll(AllTruckOffersViewModel model)
         {
@@ -129,6 +138,7 @@ namespace Tirajii.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Trucker, TruckCompany, OfferCompany")]
         [HttpGet]
         public async Task<IActionResult> AllCompanies(AllCompaniesViewModel model)
         {
@@ -146,6 +156,7 @@ namespace Tirajii.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Trucker")]
         [HttpPost]
         public async Task<IActionResult> ClaimOffer(int offerId)
         {
@@ -164,7 +175,8 @@ namespace Tirajii.Controllers
             }
            
         }
-        
+
+        [Authorize(Roles = "Trucker")]
         [HttpPost]
         public async Task<IActionResult> RateACompany(int id, int rating)
         {
@@ -192,6 +204,7 @@ namespace Tirajii.Controllers
             
         }
 
+        [Authorize(Roles = "Trucker")]
         [HttpGet]
         public async Task<IActionResult> OffersMine()
         {
@@ -201,6 +214,7 @@ namespace Tirajii.Controllers
             return View(offers);
         }
 
+        [Authorize(Roles = "Trucker")]
         [HttpGet]
         public async Task<IActionResult> OffersCompleted()
         {
@@ -208,7 +222,8 @@ namespace Tirajii.Controllers
             var offers = await truckerService.GetMyCompletedOffers(userId);
             return View(offers);
         }
-        
+
+        [Authorize(Roles = "Trucker")]
         [HttpPost]
         public async Task<IActionResult> CompleteOffer(int offerId)
         {
@@ -219,6 +234,7 @@ namespace Tirajii.Controllers
             return RedirectToAction("OffersMine", "Trucker");
         }
 
+        [Authorize(Roles = "Trucker")]
         [HttpPost]
         public async Task<IActionResult> FailOffer(int offerId)
         {
@@ -229,7 +245,7 @@ namespace Tirajii.Controllers
             return RedirectToAction("OffersMine", "Trucker");
         }
 
-        [Authorize]
+        [Authorize(Roles = "Trucker")]
         [HttpPost]
         public async Task<IActionResult> Purchase(int truckid)
         {
@@ -243,6 +259,5 @@ namespace Tirajii.Controllers
             notyf.Success("You successfully purchased a Truck!");
             return RedirectToAction("General", "Truck");
         }
-
     }
 }

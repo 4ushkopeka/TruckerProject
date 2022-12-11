@@ -10,7 +10,7 @@ using Tirajii.Services.Contracts;
 
 namespace Tirajii.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Trucker")]
     public class TruckController : Controller
     {
         private readonly ITruckService truckService;

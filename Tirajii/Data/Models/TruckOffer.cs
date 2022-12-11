@@ -33,6 +33,7 @@ namespace Tirajii.Data.Models
 
         [Required]
         public bool IsApproved { get; set; }
+
         [Required]
         public bool IsBought { get; set; }
     }

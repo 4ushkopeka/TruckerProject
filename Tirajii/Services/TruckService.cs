@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Ganss.Xss;
+using Microsoft.EntityFrameworkCore;
 using Tirajii.Data;
 using Tirajii.Data.Models;
 using Tirajii.Models;
@@ -12,14 +13,18 @@ namespace Tirajii.Services
     public class TruckService : ITruckService
     {
         private readonly TruckersDbContext context;
-        public TruckService(TruckersDbContext context)
+        private readonly HtmlSanitizer sanitizer;
+        public TruckService(TruckersDbContext context, HtmlSanitizer htmlSanitizer)
         {
             this.context = context;
+            this.sanitizer = htmlSanitizer;
         }
 
         public async Task EditTruck(TruckViewModel truck, int truckid)
         {
             var _truck = await context.Trucks.FirstAsync(x => x.Id == truckid);
+
+            truck = SanitizeTruck(truck);
 
             _truck.Name = truck.Name;
             _truck.RegistrationNumber = truck.RegistrationNumber;
@@ -50,19 +55,23 @@ namespace Tirajii.Services
             var valuesForUpgrades = truck.Upgrades.Where(x => !x.Value).ToDictionary(x => x.Key, x => x.Value);
             var numberOfPotentialUpgrades = valuesForUpgrades.Count;
             var upgradeCount = 0;
+
             if (numberOfPotentialUpgrades == 1) upgradeCount = 1;
             else upgradeCount = new Random().Next(1, numberOfPotentialUpgrades+1);
-            var upgraded = await UpgradeCalculations(truck, valuesForUpgrades, upgradeCount);
+
+            var upgraded = UpgradeCalculations(truck, valuesForUpgrades, upgradeCount);
             var truckToUpgade = await context.Trucks.FirstAsync(x => x.Id == truck.TruckId);
+
             truckToUpgade.HasBluetooth = upgraded.Upgrades["Bluetooth"];
             truckToUpgade.HasCDPlayer = upgraded.Upgrades["CDPlayer"];
             truckToUpgade.HasInstaBrakes = upgraded.Upgrades["Brakes"];
             truckToUpgade.HasParkTronic = upgraded.Upgrades["ParkTronic"];
             truckToUpgade.HasSpeakers = upgraded.Upgrades["Speakers"];
+
             await context.SaveChangesAsync();   
         }
 
-        private async Task<TruckUpgradeViewModel> UpgradeCalculations(TruckUpgradeViewModel truckStats, Dictionary<string, bool> valuesForUpgrades, int maxUpgrades)
+        private static TruckUpgradeViewModel UpgradeCalculations(TruckUpgradeViewModel truckStats, Dictionary<string, bool> valuesForUpgrades, int maxUpgrades)
         {
             while (maxUpgrades != 0)
             {
@@ -97,12 +106,14 @@ namespace Tirajii.Services
             var offer = await context.TruckOffers.FirstAsync(x => x.TruckId == truckid);
             var user = await context.Users.Include(x => x.Wallet).FirstAsync(x => x.Id == userId);
             var money = 0;
+
             if (truck.HasCDPlayer) money += new Random().Next(300, 601);
             if (truck.HasInstaBrakes) money += new Random().Next(1800, 3501);
             if (truck.HasBluetooth) money += new Random().Next(700, 1251);
             if (truck.HasParkTronic) money += new Random().Next(1500, 2601);
             if (truck.HasSpeakers) money += new Random().Next(1000, 1781);
-            user.Wallet.Balance += money+250;
+
+            user.Wallet.Balance += money+350;
             truck.OwnerId = null;
             truck.Owner = null;
             truck.CompanyId = 0;
@@ -110,10 +121,20 @@ namespace Tirajii.Services
             truck.ClassId = 0;
             offer.TruckId = 0;
             offer.Truck = null;
+
             context.TruckOffers.Remove(offer);
             context.Trucks.Remove(truck);
             await context.SaveChangesAsync();
+
             return money+250;
+        }
+        public TruckViewModel SanitizeTruck(TruckViewModel model)
+        {
+            model.Name = sanitizer.Sanitize(model.Name is null ? "" : model.Name);
+            model.Picture = sanitizer.Sanitize(model.Picture);
+            model.RegistrationNumber = sanitizer.Sanitize(model.RegistrationNumber);
+            model.Colour = sanitizer.Sanitize(model.Colour);
+            return model;
         }
     }
 }
