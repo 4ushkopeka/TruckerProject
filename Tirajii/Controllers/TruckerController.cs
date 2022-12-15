@@ -17,11 +17,14 @@ namespace Tirajii.Controllers
         private readonly ITruckerService truckerService;
         private readonly INotyfService notyf;
         private readonly UserManager<User> manager;
-        public TruckerController(ITruckerService _trService, INotyfService _notyf, UserManager<User> manager)
+        private readonly SignInManager<User> signInManager;
+        public TruckerController(ITruckerService _trService, INotyfService _notyf, UserManager<User> manager, SignInManager<User> signInManager)
         {
             truckerService = _trService;
             notyf = _notyf;
             this.manager = manager;
+            this.signInManager = signInManager;
+            this.signInManager = signInManager;
         }
 
         [HttpGet]
@@ -48,7 +51,9 @@ namespace Tirajii.Controllers
                 model.Picture = sanitizer.Sanitize(model.Picture is not null ? model.Picture : "");
                 await truckerService.RegisterTrucker(model, userId);
                 notyf.Information("Welcome");
-                await manager.AddToRoleAsync(await truckerService.GetUserWithTrucker(userId), "Trucker");
+                var user = await truckerService.GetUserWithTrucker(userId);
+                await manager.AddToRoleAsync(user, "Trucker");
+                await signInManager.SignInAsync(user, false);
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)

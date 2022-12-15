@@ -1,4 +1,5 @@
 ﻿using Ganss.Xss;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow.CopyAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -16,11 +17,10 @@ namespace Tirajii.Services
     public class TruckerService : ITruckerService
     {
         private readonly TruckersDbContext context;
-        private readonly HtmlSanitizer sanitizer;
-        public TruckerService(TruckersDbContext context, HtmlSanitizer htmlSanitizer)
+        private readonly HtmlSanitizer sanitizer = new();
+        public TruckerService(TruckersDbContext context)
         {
             this.context = context;
-            this.sanitizer = htmlSanitizer;
         }
 
         public async Task<List<TruckingCategory>> GetAllTruckingCategories()

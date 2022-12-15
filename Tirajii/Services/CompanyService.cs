@@ -1,4 +1,5 @@
 ﻿using Ganss.Xss;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using Tirajii.Data;
@@ -12,12 +13,12 @@ namespace Tirajii.Services
     public class CompanyService : ICompanyService
     {
         private readonly TruckersDbContext context;
-        private readonly HtmlSanitizer sanitizer;
+        private readonly HtmlSanitizer sanitizer = new();
 
-        public CompanyService(TruckersDbContext context, HtmlSanitizer htmlSanitizer)
+
+        public CompanyService(TruckersDbContext context)
         {
             this.context = context;
-            this.sanitizer = htmlSanitizer;
         }
 
         public async Task AddOffer(OfferAddNEditViewModel model, string userId)

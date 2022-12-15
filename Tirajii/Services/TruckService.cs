@@ -13,11 +13,10 @@ namespace Tirajii.Services
     public class TruckService : ITruckService
     {
         private readonly TruckersDbContext context;
-        private readonly HtmlSanitizer sanitizer;
-        public TruckService(TruckersDbContext context, HtmlSanitizer htmlSanitizer)
+        private readonly HtmlSanitizer sanitizer = new();
+        public TruckService(TruckersDbContext context)
         {
             this.context = context;
-            this.sanitizer = htmlSanitizer;
         }
 
         public async Task EditTruck(TruckViewModel truck, int truckid)

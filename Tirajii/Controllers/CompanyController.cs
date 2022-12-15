@@ -18,13 +18,15 @@ namespace Tirajii.Controllers
         private readonly INotyfService notyf;
         private readonly IUserService userService;
         private readonly UserManager<User> manager;
+        private readonly SignInManager<User> signInManager;
         public CompanyController(ICompanyService _cService, INotyfService _notyf, 
-            IUserService _userService, UserManager<User> manager)
+            IUserService _userService, UserManager<User> manager, SignInManager<User> signInManager)
         {
             companyService = _cService;
             notyf = _notyf;
             userService = _userService;
             this.manager = manager;
+            this.signInManager = signInManager;
         }
 
         [Authorize]
@@ -55,6 +57,7 @@ namespace Tirajii.Controllers
                 var user = await companyService.GetUserWithCompany(userId);
                 if (user.IsTruckerCompanyOwner) await manager.AddToRoleAsync(user, "TruckCompany");
                 else await manager.AddToRoleAsync(user, "OfferCompany");
+                await signInManager.SignInAsync(user, false);
                 notyf.Information("Welcome!");
                 return RedirectToAction("Index", "Home");
             }
@@ -284,7 +287,7 @@ namespace Tirajii.Controllers
             }
         }
 
-        [Authorize(Roles = "OfferCompany")]
+        [Authorize(Roles = "OfferCompany, Administrator")]
         [HttpGet]
         public IActionResult EditOffer(int id)
         {
@@ -307,7 +310,7 @@ namespace Tirajii.Controllers
             return View(model);
         }
         
-        [Authorize(Roles = "OfferCompany")]
+        [Authorize(Roles = "OfferCompany, Administrator")]
         [HttpPost]
         public async Task<IActionResult> EditOffer(OfferAddNEditViewModel model, int id)
         {
@@ -319,7 +322,8 @@ namespace Tirajii.Controllers
             {
                 await companyService.EditOffer(model, id);
                 notyf.Information("Successfully edited your offer!");
-                return RedirectToAction("OfferMine", "Company");
+                if (User.IsAdmin()) return RedirectToAction("OffersAll", "OfferAdministration", new { area = "Admin" });
+                else return RedirectToAction("OfferMine", "Company");
             }
             catch (Exception ex)
             {
@@ -329,7 +333,7 @@ namespace Tirajii.Controllers
             }
         }
 
-        [Authorize(Roles = "TruckCompany")]
+        [Authorize(Roles = "TruckCompany, Administrator")]
         [HttpGet]
         public IActionResult EditTruckOffer(int id)
         {
@@ -350,7 +354,7 @@ namespace Tirajii.Controllers
             return View(model);
         }
         
-        [Authorize(Roles = "TruckCompany")]
+        [Authorize(Roles = "TruckCompany, Administrator")]
         [HttpPost]
         public async Task<IActionResult> EditTruckOffer(TruckOfferAddNEditViewModel model, int id)
         {
@@ -362,7 +366,8 @@ namespace Tirajii.Controllers
             {
                 await companyService.EditTruckOffer(model, id);
                 notyf.Information("Successfully edited your truck offer!");
-                return RedirectToAction("TruckOfferMine", "Company");
+                if (User.IsAdmin()) return RedirectToAction("TruckOffersAll", "OfferAdministration", new { area = "Admin" });
+                else return RedirectToAction("TruckOfferMine", "Company");
             }
             catch (Exception ex)
             {
@@ -372,7 +377,7 @@ namespace Tirajii.Controllers
             }
         }
         
-        [Authorize(Roles = "OfferCompany")]
+        [Authorize(Roles = "OfferCompany, Administrator")]
         [HttpPost]
         public async Task<IActionResult> DeleteOffer(int id)
         {
@@ -385,7 +390,8 @@ namespace Tirajii.Controllers
             {
                 await companyService.DeleteOffer(id);
                 notyf.Information("Successfully deleted your offer!");
-                return RedirectToAction("OfferMine", "Company");
+                if (User.IsAdmin()) return RedirectToAction("OffersAll", "OfferAdministration", new { area = "Admin" });
+                else return RedirectToAction("OfferMine", "Company");
             }
             catch (Exception ex)
             {
@@ -395,7 +401,7 @@ namespace Tirajii.Controllers
             }
         }
         
-        [Authorize(Roles = "TruckCompany")]
+        [Authorize(Roles = "TruckCompany, Administrator")]
         [HttpPost]
         public async Task<IActionResult> DeleteTruckOffer(int id)
         {
@@ -408,7 +414,8 @@ namespace Tirajii.Controllers
             {
                 await companyService.DeleteTruckOffer(id);
                 notyf.Information("Successfully deleted your truck offer!");
-                return RedirectToAction("Index", "Home");
+                if (User.IsAdmin()) return RedirectToAction("TruckOffersAll", "OfferAdministration", new { area = "Admin" });
+                else return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {

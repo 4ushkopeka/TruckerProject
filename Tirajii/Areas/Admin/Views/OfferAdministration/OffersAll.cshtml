@@ -43,12 +43,14 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
-                                    <a asp-area="" asp-controller="Company" asp-action="Delete" asp-route-id="@offer.Id" class="btn btn-primary">Yes</a>
+                                    <form method="post">
+                                        <button type="submit" asp-area="" asp-controller="Company" asp-action="DeleteOffer" asp-route-id="@offer.Id" class="btn btn-primary">Yes</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <a asp-area="" asp-controller="Company" asp-action="Edit" asp-route-id="@offer.Id" class="btn btn-warning text-white float-end ms-3">Edit</a>
+                    <a asp-area="" asp-controller="Company" asp-action="EditOffer" asp-route-id="@offer.Id" class="btn btn-warning text-white float-end ms-3">Edit</a>
                     <a asp-area="Admin" asp-controller="OfferAdministration" asp-action="ChangeOfferVisibility" asp-route-id="@offer.Id" class="btn btn-info float-end ms-3 text-white">@(offer.IsApproved ? "Hide" : "Approve")</a>
                 </td>
             </tr>

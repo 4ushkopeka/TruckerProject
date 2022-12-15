@@ -1,4 +1,5 @@
-﻿using Tirajii.Data.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using Tirajii.Data.Models;
 using Tirajii.Models.Company;
 using Tirajii.Models.Trucker;
 
