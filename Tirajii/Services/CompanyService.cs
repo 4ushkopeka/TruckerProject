@@ -15,7 +15,6 @@ namespace Tirajii.Services
         private readonly TruckersDbContext context;
         private readonly HtmlSanitizer sanitizer = new();
 
-
         public CompanyService(TruckersDbContext context)
         {
             this.context = context;
@@ -161,7 +160,7 @@ namespace Tirajii.Services
         {
             var user = context.Users.Include(x => x.Company).First(x => x.Id == userId);
             
-            return await context.Trucks.Include(x => x.Class).Where(x => x.CompanyId == user.Company.Id && !x.IsForSale).ToListAsync();
+            return await context.Trucks.Include(x => x.Class).Where(x => x.CompanyId == user.Company.Id && !x.IsForSale && !context.TruckOffers.Any(y => y.TruckId == x.Id)).ToListAsync();
         }
 
         public async Task<RatingViewModel> GetRating(string userId)
