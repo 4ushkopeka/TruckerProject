@@ -280,28 +280,28 @@ namespace Tirajii.Services
             await context.SaveChangesAsync();
         }
 
-        public CompanyRegisterViewModel SanitizeCompany(CompanyRegisterViewModel model)
+        private CompanyRegisterViewModel SanitizeCompany(CompanyRegisterViewModel model)
         {
             model.Name = sanitizer.Sanitize(model.Name);
             model.Picture = sanitizer.Sanitize(model.Picture);
             return model;
         }
 
-        public OfferAddNEditViewModel SanitizeOffer(OfferAddNEditViewModel model)
+        private OfferAddNEditViewModel SanitizeOffer(OfferAddNEditViewModel model)
         {
             model.Name = sanitizer.Sanitize(model.Name);
             model.Description = sanitizer.Sanitize(model.Description);
             return model;
         }
 
-        public TruckOfferAddNEditViewModel SanitizeTruckOffer(TruckOfferAddNEditViewModel model)
+        private TruckOfferAddNEditViewModel SanitizeTruckOffer(TruckOfferAddNEditViewModel model)
         {
             model.Name = sanitizer.Sanitize(model.Name);
             model.Description = sanitizer.Sanitize(model.Description);
             return model;
         }
 
-        public TruckViewModel SanitizeTruck(TruckViewModel model)
+        private TruckViewModel SanitizeTruck(TruckViewModel model)
         {
             model.Name = sanitizer.Sanitize(model.Name is null ? "" : model.Name);
             model.Picture = sanitizer.Sanitize(model.Picture);

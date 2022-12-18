@@ -15,7 +15,7 @@ namespace Tirajii.Services.Contracts
 
         Task<List<CompanyCategory>> GetAllCompanyCategories();
 
-        List<TruckClass> GetAllClasses();
+        Task<List<TruckClass>> GetAllClasses();
 
         Task RateACompany(string userId, int Id, int rating);
 
@@ -26,7 +26,7 @@ namespace Tirajii.Services.Contracts
 
         AllOffersViewModel GetAllOffers(string category = null,
             string searchTerm = null,
-            CollectionSorting sorting = CollectionSorting.DueDate,
+            OfferSorting sorting = OfferSorting.DueDate,
             int currentPage = 1);
 
         AllCompaniesViewModel GetAllCompanies(string category = null,
@@ -46,8 +46,6 @@ namespace Tirajii.Services.Contracts
 
         Task<ExperienceModel> FailOffer(string userId, int offerId);
 
-        public Task<bool> Purchase(int truckId, string userId);
-
-        TruckerRegisterViewModel SanitizeTrucker(TruckerRegisterViewModel model);
+        Task<bool> Purchase(int truckId, string userId);
     }
 }

@@ -13,7 +13,7 @@ namespace Tirajii.Models.Trucker
         [Display(Name = "Search")]
         public string? SearchTerm { get; set; }
 
-        public CollectionSorting Sorting { get; set; }
+        public OfferSorting Sorting { get; set; }
 
         public int CurrentPage { get; set; } = 1;
 

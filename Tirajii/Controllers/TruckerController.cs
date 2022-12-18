@@ -126,20 +126,20 @@ namespace Tirajii.Controllers
 
         [Authorize(Roles = "Trucker")]
         [HttpGet]
-        public IActionResult TruckOffersAll(AllTruckOffersViewModel model)
+        public async Task<IActionResult> TruckOffersAll(AllTruckOffersViewModel model)
         {
             var result = truckerService.GetAllTruckOffers(model.Category,
                 model.SearchTerm,
                 model.Sorting,
                 model.CurrentPage);
 
-            var categories = truckerService.GetAllClasses();
+            var categories = await truckerService.GetAllClasses();
 
             model.Offers = result.Offers;
             model.Categories = categories;
             model.TotalOffers = result.TotalOffers;
 
-            ViewBag.User = truckerService.GetUserWithTrucker(User.Id()).Result;
+            ViewBag.User = await truckerService.GetUserWithTrucker(User.Id());
             return View(model);
         }
 

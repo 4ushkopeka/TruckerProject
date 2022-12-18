@@ -63,28 +63,27 @@ namespace Tirajii.UnitTests
                 TruckId = null
             };
 
-            var user = new User
+            var offerCompanyOwner = new User
             {
                 Id = "221ac3a1-5502-45b6-b328-8c47c142341d",
                 UserName = "peshko",
                 IsOfferCompanyOwner = true,
                 Email = "peshko@gmail.com"
             };
-            var user3 = new User
+            var dummy = new User
             {
                 Id = "221ac3a1-5502-45b6-b328-8c47c142341o",
                 UserName = "dummy",
-                IsOfferCompanyOwner = true,
                 Email = "dummy@gmail.com"
             };
-            var user1 = new User
+            var truckerCompanyOwner = new User
             {
                 Id = "221ac3a1-5502-45b6-b328-8c47c142341r",
                 UserName = "toshko",
                 IsTruckerCompanyOwner = true,
                 Email = "toshko@gmail.com"
             };
-            var user2 = new User
+            var truckerUser= new User
             {
                 Id = "221ac3a1-5502-45b6-b328-8c47c142341e",
                 UserName = "mishko",
@@ -92,10 +91,10 @@ namespace Tirajii.UnitTests
                 Email = "mishko@gmail.com"
             };
 
-            context.Users.Add(user1);
-            context.Users.Add(user);
-            context.Users.Add(user2);
-            context.Users.Add(user3);
+            context.Users.Add(offerCompanyOwner);
+            context.Users.Add(truckerCompanyOwner);
+            context.Users.Add(truckerUser);
+            context.Users.Add(dummy);
 
             context.Companies.Add(offerCompany);
             context.Companies.Add(truckerCompany);

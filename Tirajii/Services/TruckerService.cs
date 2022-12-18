@@ -28,17 +28,17 @@ namespace Tirajii.Services
             return await context.TruckingCategories.ToListAsync();
         }
 
-        public List<TruckClass> GetAllClasses()
+        public async Task<List<TruckClass>> GetAllClasses()
         {
-            return context.TruckClasses.ToList();
+            return await context.TruckClasses.ToListAsync();
         }
 
         public AllOffersViewModel GetAllOffers(string category = null,
             string searchTerm = null,
-            CollectionSorting sorting = CollectionSorting.DueDate,
+            OfferSorting sorting = OfferSorting.DueDate,
             int currentPage = 1)
         {
-            var offers = this.context.Offers.Where(c => !c.IsTaken && c.IsApproved);
+            var offers = context.Offers.Where(c => !c.IsTaken && c.IsApproved);
 
             if (!string.IsNullOrWhiteSpace(category))
             {
@@ -56,8 +56,9 @@ namespace Tirajii.Services
 
             offers = sorting switch
             {
-                CollectionSorting.DueDate => offers.OrderByDescending(c => c.DueDate),
-                CollectionSorting.Name => offers.OrderBy(c => c.Name),
+                OfferSorting.DueDate => offers.OrderByDescending(c => c.DueDate),
+                OfferSorting.Name => offers.OrderBy(c => c.Name),
+                OfferSorting.Payment => offers.OrderByDescending(c => c.Payment),
                 _ => offers.OrderByDescending(c => c.Id)
             };
             
@@ -92,7 +93,7 @@ namespace Tirajii.Services
 
             offers = sorting switch
             {
-                TruckOfferSorting.Cost => offers.OrderByDescending(c => c.Cost),
+                TruckOfferSorting.Cost => offers.OrderBy(c => c.Cost),
                 TruckOfferSorting.Name => offers.OrderBy(c => c.Name),
                 TruckOfferSorting.Company => offers.OrderBy(c => c.Company.Name),
                 _ => offers.OrderByDescending(c => c.Id)
@@ -159,7 +160,10 @@ namespace Tirajii.Services
             return user;
         }
 
-        public AllCompaniesViewModel GetAllCompanies(string category = null, string searchTerm = null, CompanySorting sorting = CompanySorting.Rating, int currentPage = 1)
+        public AllCompaniesViewModel GetAllCompanies(string category = null, 
+            string searchTerm = null, 
+            CompanySorting sorting = CompanySorting.Rating, 
+            int currentPage = 1)
         {
             var companies = this.context.Companies.Include(x => x.Owner).Where(c => true);
 
@@ -321,7 +325,7 @@ namespace Tirajii.Services
             await context.SaveChangesAsync();
         }
 
-        public TruckerRegisterViewModel SanitizeTrucker(TruckerRegisterViewModel model)
+        private TruckerRegisterViewModel SanitizeTrucker(TruckerRegisterViewModel model)
         {
             model.Picture = sanitizer.Sanitize(model.Picture is null ? "" : model.Picture);
             model.PhoneNumber = sanitizer.Sanitize(model.PhoneNumber);
